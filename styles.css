@@ -882,6 +882,24 @@ footer {
     margin-right: 10px;
 }
 
+/* Ícone discreto para acesso administrativo no rodapé */
+.admin-access-icon {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.admin-access-icon:hover {
+    opacity: 1;
+}
+
+.admin-access-icon i {
+    margin-left: 5px;
+}
+
 /* Animações */
 @keyframes fadeIn {
     from { opacity: 0; }
@@ -1781,4 +1799,32 @@ footer {
 
 .alerta-simples.info {
     background-color: #3498db;
+}
+
+/* Botão de ajuda para acesso administrativo */
+.admin-help-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dcdde1;
+    color: #2f3640;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.admin-help-button:hover {
+    background-color: #f5f6fa;
+    transform: scale(1.1);
+}
+
+.admin-help-button i {
+    font-size: 20px;
 } 
