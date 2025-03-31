@@ -87,7 +87,7 @@ Não são necessárias bibliotecas ou frameworks adicionais, tornando o projeto 
 
 ## Licença
 
-© 2023 UniAteneu. Todos os direitos reservados.
+© 2025 UniAteneu. Todos os direitos reservados.
 
 ---
 
