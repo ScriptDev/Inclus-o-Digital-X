@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniAteneu - Inclusão Digital</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="https://www.uniateneu.edu.br/wp-content/uploads/2022/09/cropped-logo.png" alt="Logo UniAteneu" class="logo">
+        </div>
+        <h1>Inclusão Digital e Programação Básica</h1>
+        <p class="subtitle">Alfabetizando para o Mundo Digital</p>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" data-target="inicio">Início</button>
+        <button class="nav-btn" data-target="computador-basico">Computador Básico</button>
+        <button class="nav-btn" data-target="internet">Internet</button>
+        <button class="nav-btn" data-target="videos-tutoriais">Vídeos Tutoriais</button>
+        <button class="nav-btn" data-target="programacao">Programação</button>
+        <button class="nav-btn" data-target="exercicios">Exercícios</button>
+        <button class="nav-btn" data-target="glossario">Glossário</button>
+        <button class="nav-btn" data-target="plano-aula">Plano de Aula</button>
+    </nav>
+
+    <main>
+        <!-- Seção de Início -->
+        <section id="inicio" class="active-section">
+            <h2>Bem-vindo(a) ao Programa de Inclusão Digital!</h2>
+            
+            <!-- Slides/Carrossel -->
+            <div class="slideshow-container">
+                <div class="slide active">
+                    <img src="https://img.icons8.com/color/96/000000/computer.png" class="slide-img" alt="Computador">
+                    <h3>Aprenda a usar o Computador</h3>
+                    <p>Descubra como ligar, desligar e usar as funções básicas do computador de forma simples e intuitiva.</p>
+                    <button class="btn" data-goto="computador-basico">Começar agora</button>
+                </div>
+                <div class="slide">
+                    <img src="https://img.icons8.com/color/96/000000/internet.png" class="slide-img" alt="Internet">
+                    <h3>Navegue pela Internet com Segurança</h3>
+                    <p>Conheça os fundamentos da navegação na internet e aprenda a utilizá-la com segurança no seu dia a dia.</p>
+                    <button class="btn" data-goto="internet">Explorar</button>
+                </div>
+                <div class="slide">
+                    <img src="https://img.icons8.com/color/96/000000/source-code.png" class="slide-img" alt="Programação">
+                    <h3>Dê seus primeiros passos na Programação</h3>
+                    <p>Entenda os conceitos básicos da programação e crie seus primeiros códigos de forma prática.</p>
+                    <button class="btn" data-goto="programacao">Aprender</button>
+                </div>
+                <button class="prev" aria-label="Slide anterior">&lt;</button>
+                <button class="next" aria-label="Próximo slide">&gt;</button>
+            </div>
+            <div class="dot-container">
+                <button class="dot active-dot" data-slide="0" aria-label="Slide 1"></button>
+                <button class="dot" data-slide="1" aria-label="Slide 2"></button>
+                <button class="dot" data-slide="2" aria-label="Slide 3"></button>
+            </div>
+            
+            <div class="intro-container">
+                <div class="intro-text">
+                    <p>Olá! Este é um programa desenvolvido pela UniAteneu para ajudar pessoas de todas as idades, especialmente os mais experientes (60+), a se familiarizar com o mundo digital.</p>
+                    <p>Aqui você vai aprender:</p>
+                    <ul>
+                        <li>Como usar um computador</li>
+                        <li>Como navegar na internet com segurança</li>
+                        <li>Noções básicas de programação</li>
+                        <li>Exercícios práticos e interativos</li>
+                    </ul>
+                    <p>Escolha um dos tópicos acima para começar sua jornada digital!</p>
+                </div>
+                <div class="intro-image">
+                    <img src="https://img.freepik.com/free-vector/online-learning-concept-illustration_114360-4735.jpg" alt="Aprendizado digital">
+                </div>
+            </div>
+            <div class="card-container">
+                <div class="card fade-in">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Computador Básico</h3>
+                    <p>Aprenda a ligar, desligar e usar as funções básicas do computador.</p>
+                    <button class="btn" data-goto="computador-basico">Começar</button>
+                </div>
+                <div class="card fade-in" style="animation-delay: 0.2s;">
+                    <i class="fas fa-globe"></i>
+                    <h3>Internet</h3>
+                    <p>Navegue na internet, use e-mail e conheça as redes sociais.</p>
+                    <button class="btn" data-goto="internet">Começar</button>
+                </div>
+                <div class="card fade-in" style="animation-delay: 0.4s;">
+                    <i class="fas fa-code"></i>
+                    <h3>Programação</h3>
+                    <p>Entenda o que é programação e crie seus primeiros códigos.</p>
+                    <button class="btn" data-goto="programacao">Começar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Computador Básico -->
+        <section id="computador-basico">
+            <h2>Computador Básico</h2>
+            
+            <!-- Tutorial passo a passo -->
+            <div class="tutorial-container">
+                <div class="tutorial-pages">
+                    <div class="tutorial-page active-page" data-page="1">
+                        <div class="tutorial-step active-step" data-step="1">
+                            <div class="step-header">
+                                <div class="step-number">1</div>
+                                <div class="step-title">Ligar o Computador</div>
+                            </div>
+                            <div class="step-content">
+                                <p>O primeiro passo para usar um computador é ligá-lo. Localize o botão de energia (geralmente tem este símbolo: <i class="fas fa-power-off"></i>) e pressione-o.</p>
+                                <p>Na simulação abaixo, você pode praticar clicando no botão "Ligar/Desligar".</p>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="2">
+                            <div class="step-header">
+                                <div class="step-number">2</div>
+                                <div class="step-title">Área de Trabalho</div>
+                            </div>
+                            <div class="step-content">
+                                <p>Após ligar o computador, você verá a área de trabalho (desktop). Nela estão os ícones de programas que você pode usar.</p>
+                                <p>Clique nos ícones para abrir os programas. Experimente clicar nos ícones na simulação abaixo.</p>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="3">
+                            <div class="step-header">
+                                <div class="step-number">3</div>
+                                <div class="step-title">Usando o Mouse</div>
+                            </div>
+                            <div class="step-content">
+                                <p>O mouse é usado para apontar e selecionar itens na tela. Ele tem dois botões principais:</p>
+                                <ul>
+                                    <li><strong>Botão esquerdo:</strong> Usado para clicar e selecionar</li>
+                                    <li><strong>Botão direito:</strong> Normalmente abre um menu de opções</li>
+                                </ul>
+                                <p>Pratique movendo o cursor e clicando nos elementos da simulação.</p>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="4">
+                            <div class="step-header">
+                                <div class="step-number">4</div>
+                                <div class="step-title">Desligar o Computador</div>
+                            </div>
+                            <div class="step-content">
+                                <p>Quando terminar de usar o computador, é importante desligá-lo corretamente. Clique no botão "Ligar/Desligar" novamente na simulação para ver como funciona.</p>
+                                <p>Em um computador real, você geralmente clica no menu Iniciar e escolhe a opção "Desligar".</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-page" data-page="2">
+                        <div class="tutorial-step" data-step="5">
+                            <div class="step-header">
+                                <div class="step-number">5</div>
+                                <div class="step-title">Teclado</div>
+                            </div>
+                            <div class="step-content">
+                                <p>O teclado é usado para digitar textos e números no computador. Ele tem várias teclas importantes:</p>
+                                <ul>
+                                    <li><strong>Letras e números:</strong> Para digitar textos e valores</li>
+                                    <li><strong>Enter:</strong> Confirma ações ou inicia uma nova linha</li>
+                                    <li><strong>Backspace:</strong> Apaga o caractere à esquerda do cursor</li>
+                                    <li><strong>Teclas de setas:</strong> Movem o cursor na tela</li>
+                                </ul>
+                                <p>Experimente digitar algo em um editor de texto para praticar.</p>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="6">
+                            <div class="step-header">
+                                <div class="step-number">6</div>
+                                <div class="step-title">Menu Iniciar</div>
+                            </div>
+                            <div class="step-content">
+                                <p>O Menu Iniciar é onde você encontra todos os programas instalados no computador. Ele geralmente fica no canto inferior esquerdo da tela.</p>
+                                <p>Para abrir o Menu Iniciar, clique no ícone do Windows (no canto inferior esquerdo) ou pressione a tecla Windows no teclado.</p>
+                                <p>A partir do Menu Iniciar, você pode acessar programas, configurações e desligar o computador.</p>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="7">
+                            <div class="step-header">
+                                <div class="step-number">7</div>
+                                <div class="step-title">Janelas e Botões</div>
+                            </div>
+                            <div class="step-content">
+                                <p>Os programas no computador abrem em "janelas". Cada janela tem três botões importantes no canto superior direito:</p>
+                                <ul>
+                                    <li><strong>Minimizar (−):</strong> Oculta a janela temporariamente</li>
+                                    <li><strong>Maximizar (□):</strong> Expande a janela para ocupar toda a tela</li>
+                                    <li><strong>Fechar (×):</strong> Fecha o programa</li>
+                                </ul>
+                                <p>Você pode mover uma janela arrastando sua barra superior e redimensioná-la puxando suas bordas.</p>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="8">
+                            <div class="step-header">
+                                <div class="step-number">8</div>
+                                <div class="step-title">Arquivos e Pastas</div>
+                            </div>
+                            <div class="step-content">
+                                <p>Os arquivos são documentos, fotos, vídeos ou outros conteúdos guardados no computador. As pastas são como gavetas que organizam esses arquivos.</p>
+                                <p>Para abrir o explorador de arquivos, clique no ícone da pasta na barra de tarefas ou no menu Iniciar.</p>
+                                <p>Dentro do explorador de arquivos, você pode:</p>
+                                <ul>
+                                    <li>Abrir arquivos com um duplo clique</li>
+                                    <li>Criar novas pastas com o botão direito → Nova pasta</li>
+                                    <li>Copiar e colar usando os botões direitos ou Ctrl+C e Ctrl+V</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tutorial-page" data-page="3">
+                        <div class="tutorial-step" data-step="9">
+                            <div class="step-header">
+                                <div class="step-number">9</div>
+                                <div class="step-title">Conexão com a Internet</div>
+                            </div>
+                            <div class="step-content">
+                                <p>Para usar a internet, seu computador precisa estar conectado a uma rede Wi-Fi ou cabo de rede.</p>
+                                <p>Para se conectar a uma rede Wi-Fi:</p>
+                                <ol>
+                                    <li>Clique no ícone de Wi-Fi na barra de tarefas (canto inferior direito)</li>
+                                    <li>Selecione sua rede na lista</li>
+                                    <li>Digite a senha se for solicitada</li>
+                                    <li>Clique em "Conectar"</li>
+                                </ol>
+                                <p>Quando conectado, o ícone de Wi-Fi mostrará barras indicando a força do sinal.</p>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="10">
+                            <div class="step-header">
+                                <div class="step-number">10</div>
+                                <div class="step-title">Programa Antivírus</div>
+                            </div>
+                            <div class="step-content">
+                                <p>Um antivírus protege seu computador contra programas maliciosos que podem danificar arquivos ou roubar informações.</p>
+                                <p>A maioria dos computadores já vem com um antivírus instalado (como o Windows Defender). É importante:</p>
+                                <ul>
+                                    <li>Manter o antivírus sempre atualizado</li>
+                                    <li>Realizar verificações periódicas do sistema</li>
+                                    <li>Não abrir anexos de e-mails desconhecidos</li>
+                                    <li>Ter cuidado ao baixar arquivos da internet</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="11">
+                            <div class="step-header">
+                                <div class="step-number">11</div>
+                                <div class="step-title">Atualizações do Sistema</div>
+                            </div>
+                            <div class="step-content">
+                                <p>Atualizações são melhorias e correções de segurança para o sistema operacional do seu computador.</p>
+                                <p>Para verificar atualizações no Windows:</p>
+                                <ol>
+                                    <li>Abra o menu Iniciar e clique em "Configurações" (ícone de engrenagem)</li>
+                                    <li>Selecione "Atualização e Segurança"</li>
+                                    <li>Clique em "Verificar por atualizações"</li>
+                                </ol>
+                                <p>É recomendado manter seu sistema sempre atualizado para maior segurança e desempenho.</p>
+                            </div>
+                        </div>
+                        <div class="tutorial-step" data-step="12">
+                            <div class="step-header">
+                                <div class="step-number">12</div>
+                                <div class="step-title">Impressora e Dispositivos</div>
+                            </div>
+                            <div class="step-content">
+                                <p>Você pode conectar vários dispositivos ao seu computador, como impressoras, fones de ouvido, pendrives, etc.</p>
+                                <p>Para configurar uma impressora:</p>
+                                <ol>
+                                    <li>Conecte a impressora ao computador e ligue-a</li>
+                                    <li>Abra as Configurações e selecione "Dispositivos"</li>
+                                    <li>Clique em "Impressoras e scanners"</li>
+                                    <li>Selecione "Adicionar impressora" e siga as instruções</li>
+                                </ol>
+                                <p>Pendrives e outros dispositivos USB geralmente são reconhecidos automaticamente quando conectados.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-indicator">
+                    <span class="page-number active-page-number" data-page="1">1</span>
+                    <span class="page-number" data-page="2">2</span>
+                    <span class="page-number" data-page="3">3</span>
+                </div>
+                <div class="tutorial-navigation">
+                    <button class="btn step-prev" disabled>Anterior</button>
+                    <button class="btn step-next">Próximo</button>
+                </div>
+            </div>
+            
+            <div class="computer-simulator">
+                <div class="computer-screen">
+                    <div class="desktop">
+                        <div class="desktop-icon" data-app="explorer">
+                            <i class="fas fa-folder"></i>
+                            <span>Arquivos</span>
+                        </div>
+                        <div class="desktop-icon" data-app="browser">
+                            <i class="fas fa-globe"></i>
+                            <span>Internet</span>
+                        </div>
+                        <div class="desktop-icon" data-app="notepad">
+                            <i class="fas fa-sticky-note"></i>
+                            <span>Bloco de Notas</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="computer-controls">
+                    <button id="powerBtn" class="btn">Ligar/Desligar</button>
+                    <button id="helpBtn" class="btn">Ajuda</button>
+                </div>
+            </div>
+            <div class="lesson-content">
+                <h3>O que é um computador?</h3>
+                <p>Um computador é uma máquina que processa informações. Ele tem alguns componentes principais:</p>
+                <ul>
+                    <li><strong>Monitor:</strong> É a tela onde você vê as informações.</li>
+                    <li><strong>CPU (Unidade Central de Processamento):</strong> É o "cérebro" do computador.</li>
+                    <li><strong>Teclado:</strong> Usado para digitar texto e números.</li>
+                    <li><strong>Mouse:</strong> Usado para apontar e clicar na tela.</li>
+                </ul>
+                <div class="interactive-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <p>Experimente ligar o computador virtual acima e clique nos ícones para abrir programas!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Internet -->
+        <section id="internet">
+            <h2>Internet</h2>
+            
+            <!-- Slides/Carrossel de Internet -->
+            <div class="slideshow-container">
+                <div class="slide active">
+                    <img src="https://img.icons8.com/color/96/000000/browser-window.png" class="slide-img" alt="Navegador">
+                    <h3>Navegação na Internet</h3>
+                    <p>Aprenda a usar um navegador web para acessar sites, fazer pesquisas e descobrir informações.</p>
+                </div>
+                <div class="slide">
+                    <img src="https://img.icons8.com/color/96/000000/secured-letter.png" class="slide-img" alt="Email">
+                    <h3>E-mail e Comunicação</h3>
+                    <p>Saiba como criar e usar uma conta de e-mail para se comunicar com amigos e familiares.</p>
+                </div>
+                <div class="slide">
+                    <img src="https://img.icons8.com/color/96/000000/security-checked.png" class="slide-img" alt="Segurança">
+                    <h3>Segurança na Internet</h3>
+                    <p>Conheça práticas importantes para navegar com segurança e proteger suas informações pessoais.</p>
+                </div>
+                <button class="prev" aria-label="Slide anterior">&lt;</button>
+                <button class="next" aria-label="Próximo slide">&gt;</button>
+            </div>
+            <div class="dot-container">
+                <button class="dot active-dot" data-slide="0" aria-label="Slide 1"></button>
+                <button class="dot" data-slide="1" aria-label="Slide 2"></button>
+                <button class="dot" data-slide="2" aria-label="Slide 3"></button>
+            </div>
+            
+            <div class="browser-simulator">
+                <div class="browser-toolbar">
+                    <button class="browser-btn back"><i class="fas fa-arrow-left"></i></button>
+                    <button class="browser-btn forward"><i class="fas fa-arrow-right"></i></button>
+                    <button class="browser-btn refresh"><i class="fas fa-redo"></i></button>
+                    <div class="address-bar">
+                        <span class="https-icon"><i class="fas fa-lock"></i></span>
+                        <input type="text" value="www.uniateneu.edu.br">
+                        <button class="go-btn"><i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                <div class="browser-content">
+                    <img src="https://www.uniateneu.edu.br/wp-content/uploads/2022/09/cropped-logo.png" alt="UniAteneu" class="browser-logo">
+                    <h3>Bem-vindo à Internet!</h3>
+                    <p>A internet é uma rede global de computadores conectados.</p>
+                    <div class="search-container">
+                        <input type="text" placeholder="Pesquise algo...">
+                        <button class="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="lesson-content">
+                <h3>Navegando na Internet com Segurança</h3>
+                <p>A internet é uma ferramenta poderosa, mas requer alguns cuidados:</p>
+                <ul>
+                    <li>Verifique se os sites são seguros (símbolo de cadeado).</li>
+                    <li>Nunca compartilhe senhas ou dados bancários.</li>
+                    <li>Tenha cuidado com e-mails de remetentes desconhecidos.</li>
+                    <li>Use senhas fortes e diferentes para cada site.</li>
+                </ul>
+                <div class="interactive-tip">
+                    <i class="fas fa-lightbulb"></i>
+                    <p>Experimente usar a barra de pesquisa acima para simular uma busca na internet!</p>
+                </div>
+            </div>
+            
+            <!-- Quiz avançado sobre Internet -->
+            <div class="quiz-advanced">
+                <h3>Quiz: Segurança na Internet</h3>
+                <p>Teste seus conhecimentos sobre segurança na internet!</p>
+                <div class="quiz-progress">
+                    <div class="progress-bar"></div>
+                </div>
+                <div class="quiz-question-container">
+                    <div class="quiz-question" data-question="1">
+                        <p class="quiz-question-text">1. O que indica que um site é seguro?</p>
+                        <div class="quiz-answers">
+                            <div class="quiz-answer" data-correct="true">Um símbolo de cadeado na barra de endereço</div>
+                            <div class="quiz-answer">Muitas propagandas e janelas pop-up</div>
+                            <div class="quiz-answer">Cores vibrantes e chamativos</div>
+                            <div class="quiz-answer">Músicas que tocam automaticamente</div>
+                        </div>
+                    </div>
+                    <div class="quiz-question" data-question="2" style="display: none;">
+                        <p class="quiz-question-text">2. Qual das seguintes é uma senha forte?</p>
+                        <div class="quiz-answers">
+                            <div class="quiz-answer">123456</div>
+                            <div class="quiz-answer">senha</div>
+                            <div class="quiz-answer" data-correct="true">T%9pL!2@xB</div>
+                            <div class="quiz-answer">meuNome</div>
+                        </div>
+                    </div>
+                    <div class="quiz-question" data-question="3" style="display: none;">
+                        <p class="quiz-question-text">3. O que você deve fazer ao receber um e-mail suspeito?</p>
+                        <div class="quiz-answers">
+                            <div class="quiz-answer">Abrir todos os anexos para verificar</div>
+                            <div class="quiz-answer">Clicar em todos os links para testar</div>
+                            <div class="quiz-answer">Responder pedindo mais informações</div>
+                            <div class="quiz-answer" data-correct="true">Excluir o e-mail sem abrir anexos ou clicar em links</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="quiz-controls">
+                    <button class="btn quiz-prev" disabled>Anterior</button>
+                    <button class="btn quiz-next">Próxima</button>
+                </div>
+                <div class="quiz-result">
+                    <h3>Resultado do Quiz</h3>
+                    <p>Você acertou:</p>
+                    <div class="result-score">0/3</div>
+                    <button class="btn quiz-restart">Tentar Novamente</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Videos Tutoriais -->
+        <section id="videos-tutoriais">
+            <h2>Vídeos Tutoriais</h2>
+            <p class="section-intro">Aprenda através de vídeos explicativos que mostram passo a passo como realizar tarefas no computador e na internet.</p>
+            
+            <div class="video-grid">
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/ybuCRr-aLuw" title="Como usar o Mouse e o Teclado" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Como usar o Mouse e o Teclado</h3>
+                        <p>Aprenda a utilizar corretamente o mouse e o teclado, ferramentas essenciais para interagir com o computador.</p>
+                        <div class="video-tags">
+                            <span class="tag">Iniciante</span>
+                            <span class="tag">Hardware</span>
+                            <span class="tag">10 min</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/ZETnnhS39Is" title="Navegando na Internet com Segurança" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Navegando na Internet com Segurança</h3>
+                        <p>Dicas importantes para navegar na internet de forma segura, protegendo seus dados pessoais.</p>
+                        <div class="video-tags">
+                            <span class="tag">Intermediário</span>
+                            <span class="tag">Segurança</span>
+                            <span class="tag">15 min</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/8mei6uVttho" title="Criando seu primeiro e-mail" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Criando seu primeiro e-mail</h3>
+                        <p>Passo a passo para criar sua conta de e-mail e começar a se comunicar online.</p>
+                        <div class="video-tags">
+                            <span class="tag">Iniciante</span>
+                            <span class="tag">Comunicação</span>
+                            <span class="tag">12 min</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="video-card">
+                    <div class="video-container">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/BTENKdRVS2U" title="Conceitos básicos de programação" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-info">
+                        <h3>Conceitos básicos de programação</h3>
+                        <p>Introdução aos fundamentos da programação com exemplos simples e práticos.</p>
+                        <div class="video-tags">
+                            <span class="tag">Intermediário</span>
+                            <span class="tag">Programação</span>
+                            <span class="tag">20 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="video-notes">
+                <h3>Notas de estudo</h3>
+                <p>Use o espaço abaixo para fazer anotações enquanto assiste aos vídeos:</p>
+                <textarea class="notes-area" placeholder="Suas anotações aqui..."></textarea>
+                <button class="btn" id="saveNotes">Salvar anotações</button>
+                <button class="btn" id="clearNotes">Limpar</button>
+            </div>
+            
+            <div class="video-discussion">
+                <h3>Discussão em grupo</h3>
+                <p>Após assistir aos vídeos, discuta com seu grupo:</p>
+                <ul class="discussion-topics">
+                    <li>Qual foi a informação mais importante que você aprendeu nos vídeos?</li>
+                    <li>Quais dúvidas ainda persistem sobre o uso do computador ou da internet?</li>
+                    <li>Como você aplicaria o conhecimento adquirido no seu dia a dia?</li>
+                    <li>Quais outros tópicos você gostaria de aprender em vídeos futuros?</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Seção de Programação -->
+        <section id="programacao">
+            <h2>Programação Básica</h2>
+            <div class="code-simulator">
+                <div class="code-editor">
+                    <div class="editor-header">
+                        <span>Editor de Código</span>
+                    </div>
+                    <textarea id="codeArea" placeholder="Digite seu código aqui...">// Exemplo de código
+console.log("Olá, mundo!");</textarea>
+                </div>
+                <div class="code-output">
+                    <div class="output-header">
+                        <span>Resultado</span>
+                    </div>
+                    <div id="outputArea" class="output-content"></div>
+                </div>
+                <div class="code-controls">
+                    <button id="runCodeBtn" class="btn">Executar <i class="fas fa-play"></i></button>
+                    <button id="clearCodeBtn" class="btn">Limpar <i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+            <div class="lesson-content">
+                <h3>O que é programação?</h3>
+                <p>Programação é como dar instruções para um computador realizar tarefas. É como uma receita de bolo, onde cada passo deve ser seguido na ordem correta.</p>
+                <h4>Conceitos básicos:</h4>
+                <ul>
+                    <li><strong>Variáveis:</strong> São como caixas que guardam informações.</li>
+                    <li><strong>Funções:</strong> São conjuntos de instruções que realizam uma tarefa.</li>
+                    <li><strong>Condicionais:</strong> São decisões baseadas em condições (se isso, então aquilo).</li>
+                </ul>
+                <div class="code-examples">
+                    <h4>Exemplos para testar:</h4>
+                    <div class="code-example">
+                        <button class="example-btn" data-code="// Criando uma variável e mostrando na tela
+let nome = 'UniAteneu';
+console.log('Olá, ' + nome + '!');">Exemplo 1: Variáveis</button>
+                    </div>
+                    <div class="code-example">
+                        <button class="example-btn" data-code="// Função que soma dois números
+function somar(a, b) {
+  return a + b;
+}
+let resultado = somar(5, 3);
+console.log('A soma é: ' + resultado);">Exemplo 2: Funções</button>
+                    </div>
+                    <div class="code-example">
+                        <button class="example-btn" data-code="// Verificando se um número é par ou ímpar
+let numero = 7;
+if (numero % 2 === 0) {
+  console.log(numero + ' é um número par');
+} else {
+  console.log(numero + ' é um número ímpar');
+}">Exemplo 3: Condicionais</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Exercícios -->
+        <section id="exercicios">
+            <h2>Exercícios Práticos</h2>
+            <div class="exercises-container">
+                <div class="exercise-card">
+                    <h3>Exercício 1: Digitação</h3>
+                    <p>Digite o texto abaixo na caixa de digitação:</p>
+                    <div class="typing-text">O aprendizado digital é importante para todas as idades.</div>
+                    <textarea class="typing-input" placeholder="Digite aqui..."></textarea>
+                    <div class="exercise-feedback"></div>
+                    <button class="btn check-btn">Verificar</button>
+                </div>
+
+                <div class="exercise-card">
+                    <h3>Exercício 2: Quiz de Conhecimentos</h3>
+                    <div class="quiz-container">
+                        <div class="quiz-progress-indicator">
+                            <div class="progress-bar"></div>
+                            <div class="question-counter">Pergunta <span class="current-question">1</span> de <span class="total-questions">4</span></div>
+                        </div>
+                        <div class="quiz-questions">
+                            <div class="quiz-question active" data-question="1">
+                                <p>Qual destes é um dispositivo de entrada?</p>
+                                <div class="quiz-options">
+                                    <div class="quiz-option"><input type="radio" name="quiz1" id="q1a" value="a"><label for="q1a">Monitor</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz1" id="q1b" value="b"><label for="q1b">Impressora</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz1" id="q1c" value="c"><label for="q1c">Teclado</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz1" id="q1d" value="d"><label for="q1d">Caixas de Som</label></div>
+                                </div>
+                            </div>
+                            <div class="quiz-question" data-question="2">
+                                <p>Qual dos seguintes é um sistema operacional?</p>
+                                <div class="quiz-options">
+                                    <div class="quiz-option"><input type="radio" name="quiz2" id="q2a" value="a"><label for="q2a">Microsoft Word</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz2" id="q2b" value="b"><label for="q2b">Windows</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz2" id="q2c" value="c"><label for="q2c">Adobe Photoshop</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz2" id="q2d" value="d"><label for="q2d">Google Chrome</label></div>
+                                </div>
+                            </div>
+                            <div class="quiz-question" data-question="3">
+                                <p>Para que serve o botão "X" no canto superior direito de uma janela?</p>
+                                <div class="quiz-options">
+                                    <div class="quiz-option"><input type="radio" name="quiz3" id="q3a" value="a"><label for="q3a">Minimizar a janela</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz3" id="q3b" value="b"><label for="q3b">Maximizar a janela</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz3" id="q3c" value="c"><label for="q3c">Fechar a janela</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz3" id="q3d" value="d"><label for="q3d">Mover a janela</label></div>
+                                </div>
+                            </div>
+                            <div class="quiz-question" data-question="4">
+                                <p>O que é Wi-Fi?</p>
+                                <div class="quiz-options">
+                                    <div class="quiz-option"><input type="radio" name="quiz4" id="q4a" value="a"><label for="q4a">Um tipo de arquivo de texto</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz4" id="q4b" value="b"><label for="q4b">Uma marca de computador</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz4" id="q4c" value="c"><label for="q4c">Um programa antivírus</label></div>
+                                    <div class="quiz-option"><input type="radio" name="quiz4" id="q4d" value="d"><label for="q4d">Tecnologia de conexão sem fio</label></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="quiz-feedback"></div>
+                        <div class="quiz-navigation">
+                            <button class="btn quiz-prev-btn" disabled>Anterior</button>
+                            <button class="btn check-btn">Verificar</button>
+                            <button class="btn quiz-next-btn" disabled>Próxima</button>
+                        </div>
+                        <div class="quiz-results" style="display: none;">
+                            <h4>Seus resultados:</h4>
+                            <div class="quiz-score">0/4</div>
+                            <div class="result-details"></div>
+                            <button class="btn restart-quiz-btn">Recomeçar Quiz</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exercise-card">
+                    <h3>Exercício 3: Arrastar e Soltar</h3>
+                    <p>Arraste os itens para as categorias corretas:</p>
+                    <div class="drag-container">
+                        <div class="drag-items">
+                            <div class="drag-item" draggable="true" data-type="hardware">Mouse</div>
+                            <div class="drag-item" draggable="true" data-type="software">Word</div>
+                            <div class="drag-item" draggable="true" data-type="hardware">Teclado</div>
+                            <div class="drag-item" draggable="true" data-type="software">Chrome</div>
+                            <div class="drag-item" draggable="true" data-type="hardware">Monitor</div>
+                            <div class="drag-item" draggable="true" data-type="software">Excel</div>
+                        </div>
+                        <div class="drop-zones">
+                            <div class="drop-zone" data-type="hardware">
+                                <h4>Hardware</h4>
+                                <p>(Componentes físicos)</p>
+                            </div>
+                            <div class="drop-zone" data-type="software">
+                                <h4>Software</h4>
+                                <p>(Programas)</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="exercise-feedback"></div>
+                    <button class="btn reset-btn">Reiniciar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Glossário -->
+        <section id="glossario">
+            <h2>Glossário de Termos Técnicos</h2>
+            <p class="section-intro">Confira abaixo os principais termos técnicos relacionados à informática e suas definições.</p>
+            
+            <div class="search-glossary">
+                <input type="text" id="glossary-search" placeholder="Buscar termo...">
+                <button class="btn" id="search-glossary-btn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div class="glossary-container">
+                <div class="glossary-item">
+                    <div class="glossary-term">Hardware</div>
+                    <div class="glossary-definition">
+                        <p>São os componentes físicos do computador, ou seja, as peças e equipamentos que podem ser tocados, como monitor, teclado, mouse, etc.</p>
+                        <p class="glossary-example">Exemplos: CPU, placa-mãe, disco rígido, memória RAM.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Software</div>
+                    <div class="glossary-definition">
+                        <p>São os programas e sistemas que fazem o computador funcionar. São as instruções que dizem ao hardware o que fazer.</p>
+                        <p class="glossary-example">Exemplos: Sistema operacional (Windows, MacOS), aplicativos (Word, Excel), navegadores de internet.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Internet</div>
+                    <div class="glossary-definition">
+                        <p>Rede global que conecta milhões de computadores em todo o mundo, permitindo a troca de informações e o acesso a diversos serviços.</p>
+                        <p class="glossary-example">Você usa a internet quando acessa sites, envia e-mails ou participa de redes sociais.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Wi-Fi</div>
+                    <div class="glossary-definition">
+                        <p>Tecnologia que permite a conexão sem fio (wireless) de dispositivos à internet, dispensando o uso de cabos.</p>
+                        <p class="glossary-example">Quando você conecta seu celular ou notebook à internet de casa sem usar cabos, está usando Wi-Fi.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Navegador</div>
+                    <div class="glossary-definition">
+                        <p>Programa utilizado para visualizar páginas na internet, como sites e blogs.</p>
+                        <p class="glossary-example">Exemplos: Google Chrome, Mozilla Firefox, Microsoft Edge, Safari.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">URL</div>
+                    <div class="glossary-definition">
+                        <p>Endereço que identifica um site na internet, geralmente começando com "http://" ou "https://".</p>
+                        <p class="glossary-example">Exemplo: https://www.uniateneu.edu.br</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Download</div>
+                    <div class="glossary-definition">
+                        <p>Processo de transferir (baixar) um arquivo da internet para o seu computador.</p>
+                        <p class="glossary-example">Quando você salva uma foto ou documento da internet no seu computador, está fazendo um download.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Upload</div>
+                    <div class="glossary-definition">
+                        <p>Processo de transferir um arquivo do seu computador para a internet.</p>
+                        <p class="glossary-example">Quando você envia uma foto para as redes sociais ou anexa um documento em um e-mail, está fazendo um upload.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Vírus</div>
+                    <div class="glossary-definition">
+                        <p>Programa malicioso que infecta o computador, podendo danificar arquivos, roubar informações ou prejudicar o funcionamento do sistema.</p>
+                        <p class="glossary-example">Um vírus pode chegar ao seu computador através de e-mails suspeitos, sites duvidosos ou pendrives infectados.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Antivírus</div>
+                    <div class="glossary-definition">
+                        <p>Programa que protege o computador contra vírus e outras ameaças digitais.</p>
+                        <p class="glossary-example">Exemplos: Avast, AVG, Norton, Kaspersky.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Programação</div>
+                    <div class="glossary-definition">
+                        <p>Arte de criar instruções para que o computador execute tarefas específicas, utilizando linguagens de programação.</p>
+                        <p class="glossary-example">JavaScript, Python e Java são exemplos de linguagens de programação.</p>
+                    </div>
+                </div>
+                
+                <div class="glossary-item">
+                    <div class="glossary-term">Algoritmo</div>
+                    <div class="glossary-definition">
+                        <p>Sequência de passos lógicos para resolver um problema ou executar uma tarefa.</p>
+                        <p class="glossary-example">Uma receita de bolo é um exemplo de algoritmo do dia a dia, pois contém uma sequência de passos a seguir.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glossary-print">
+                <button class="btn" id="print-glossary"><i class="fas fa-print"></i> Imprimir Glossário</button>
+            </div>
+        </section>
+
+        <!-- Seção de Plano de Aula para Instrutores -->
+        <section id="plano-aula">
+            <h2>Plano de Aula e Recursos para Instrutores</h2>
+            <p class="section-intro">Este espaço é dedicado aos instrutores e contém recursos para facilitar o ensino de inclusão digital.</p>
+            
+            <div class="timer-container">
+                <div class="lesson-timer">01:00:00</div>
+                <button class="btn start-lesson-btn">Iniciar Aula</button>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header">Metodologia de Ensino</div>
+                    <div class="accordion-content">
+                        <h3>Abordagem Metodológica</h3>
+                        <p>A metodologia utilizada neste curso baseia-se na aprendizagem ativa, onde os participantes são incentivados a praticar enquanto aprendem. Considerando o público-alvo (pessoas acima de 60 anos), recomenda-se:</p>
+                        <ul>
+                            <li><strong>Ritmo adequado:</strong> Conduzir as explicações com calma, respeitando o tempo de aprendizado de cada um.</li>
+                            <li><strong>Exemplos práticos:</strong> Utilizar exemplos que façam sentido no cotidiano dos participantes.</li>
+                            <li><strong>Repetição construtiva:</strong> Reforçar conceitos importantes de forma variada.</li>
+                            <li><strong>Paciência e empatia:</strong> Estar preparado para repetir instruções e evitar termos técnicos complexos.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">Roteiro da Aula (1 hora)</div>
+                    <div class="accordion-content">
+                        <h3>Estrutura Sugerida</h3>
+                        <ol>
+                            <li><strong>Introdução (10 minutos)</strong>
+                                <ul>
+                                    <li>Apresentação dos participantes e instrutores</li>
+                                    <li>Breve explicação sobre a importância da inclusão digital</li>
+                                    <li>Verificação do conhecimento prévio dos participantes</li>
+                                </ul>
+                            </li>
+                            <li><strong>Conteúdo Principal (35 minutos)</strong>
+                                <ul>
+                                    <li>Explicação dos conceitos básicos (5-10 min)</li>
+                                    <li>Demonstração prática (10-15 min)</li>
+                                    <li>Atividade guiada com os participantes (15-20 min)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Exercícios Práticos (10 minutos)</strong>
+                                <ul>
+                                    <li>Aplicação dos conhecimentos em exercícios simples</li>
+                                    <li>Auxílio individualizado conforme necessário</li>
+                                </ul>
+                            </li>
+                            <li><strong>Encerramento (5 minutos)</strong>
+                                <ul>
+                                    <li>Recapitulação do conteúdo aprendido</li>
+                                    <li>Esclarecimento de dúvidas finais</li>
+                                    <li>Anúncio do tema da próxima aula</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">Dicas para Facilitar o Aprendizado</div>
+                    <div class="accordion-content">
+                        <h3>Estratégias Pedagógicas</h3>
+                        <ul>
+                            <li><strong>Ambiente favorável:</strong> Garantir que a sala tenha iluminação adequada e que os equipamentos estejam funcionando corretamente.</li>
+                            <li><strong>Material de apoio:</strong> Disponibilizar materiais impressos com os principais conceitos e ilustrações.</li>
+                            <li><strong>Linguagem acessível:</strong> Evitar jargões técnicos e explicar termos desconhecidos.</li>
+                            <li><strong>Incentivo constante:</strong> Valorizar cada progresso, por menor que seja, para manter a motivação.</li>
+                            <li><strong>Ritmo individualizado:</strong> Respeitar o tempo de aprendizado de cada participante.</li>
+                            <li><strong>Associações com o cotidiano:</strong> Relacionar os novos conhecimentos com atividades já familiares aos participantes.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">Recursos Adicionais</div>
+                    <div class="accordion-content">
+                        <h3>Materiais Complementares</h3>
+                        <div class="resources-grid">
+                            <div class="resource-card">
+                                <i class="fas fa-file-pdf"></i>
+                                <h4>Apostila Completa</h4>
+                                <p>Material didático com todo o conteúdo do curso em formato PDF.</p>
+                                <a href="#" class="btn btn-sm">Download</a>
+                            </div>
+                            <div class="resource-card">
+                                <i class="fas fa-file-powerpoint"></i>
+                                <h4>Apresentações</h4>
+                                <p>Slides para utilizar durante as aulas.</p>
+                                <a href="#" class="btn btn-sm">Download</a>
+                            </div>
+                            <div class="resource-card">
+                                <i class="fas fa-file-alt"></i>
+                                <h4>Atividades Práticas</h4>
+                                <p>Exercícios extras para reforçar o aprendizado.</p>
+                                <a href="#" class="btn btn-sm">Download</a>
+                            </div>
+                            <div class="resource-card">
+                                <i class="fas fa-video"></i>
+                                <h4>Videoaulas Complementares</h4>
+                                <p>Vídeos adicionais para aprofundar os temas.</p>
+                                <a href="#" class="btn btn-sm">Acessar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">Avaliação do Aprendizado</div>
+                    <div class="accordion-content">
+                        <h3>Métodos de Avaliação</h3>
+                        <p>A avaliação não deve ser um fator de stress para os participantes. Recomenda-se uma abordagem formativa, focada no processo de aprendizagem:</p>
+                        <ul>
+                            <li><strong>Observação direta:</strong> Acompanhar o desenvolvimento durante as atividades práticas.</li>
+                            <li><strong>Autoavaliação:</strong> Pedir que os participantes reflitam sobre seu próprio progresso.</li>
+                            <li><strong>Exercícios práticos:</strong> Propor tarefas simples que apliquem o conhecimento adquirido.</li>
+                            <li><strong>Feedback construtivo:</strong> Fornecer retorno individualizado, destacando avanços e áreas para melhoria.</li>
+                        </ul>
+                        <div class="evaluation-form">
+                            <h4>Ficha de Acompanhamento</h4>
+                            <a href="#" class="btn">Baixar modelo de ficha</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instructor-notes">
+                <h3>Anotações do Instrutor</h3>
+                <textarea class="instructor-notes-area" placeholder="Faça suas anotações sobre a turma e o andamento das aulas..."></textarea>
+                <div class="notes-controls">
+                    <button class="btn" id="saveInstructorNotes">Salvar</button>
+                    <button class="btn" id="clearInstructorNotes">Limpar</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="https://www.uniateneu.edu.br/wp-content/uploads/2022/09/cropped-logo.png" alt="Logo UniAteneu" class="footer-logo-img">
+            </div>
+            <div class="footer-info">
+                <p>Inclusão Digital e Programação Básica: Alfabetizando para o Mundo Digital</p>
+                <p>Desenvolvido por alunos da UniAteneu</p>
+                <p>&copy; 2023 UniAteneu. Todos os direitos reservados.</p>
+            </div>
+            <div class="footer-contact">
+                <h3>Contato</h3>
+                <p><i class="fas fa-envelope"></i> contato@uniateneu.edu.br</p>
+                <p><i class="fas fa-phone"></i> (85) 3033-7300</p>
+                <p><i class="fas fa-map-marker-alt"></i> Fortaleza, Ceará - Brasil</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Alerta de cookies -->
+    <div class="cookie-alert">
+        <div class="cookie-text">
+            <p>Este site utiliza cookies para melhorar sua experiência. Ao continuar navegando, você concorda com nossa <a href="#">Política de Privacidade</a>.</p>
+        </div>
+        <div class="cookie-buttons">
+            <button class="btn" id="acceptCookies">Aceitar</button>
+            <button class="btn" id="rejectCookies" style="background-color: #dcdde1; color: #2f3640;">Rejeitar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
