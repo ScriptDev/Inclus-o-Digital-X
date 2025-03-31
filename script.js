@@ -1144,48 +1144,23 @@ document.addEventListener('DOMContentLoaded', function() {
         alertasAntigos.forEach(alerta => {
             alerta.remove();
         });
-
+        
         // Criar novo alerta
         const alerta = document.createElement('div');
-        alerta.className = `alerta-simples alerta-${tipo}`;
-        alerta.innerHTML = mensagem;
+        alerta.className = `alerta-simples ${tipo}`;
+        alerta.textContent = mensagem;
+        
+        // Adicionar ao corpo do documento
         document.body.appendChild(alerta);
-
-        // Adicionar estilos
-        alerta.style.position = 'fixed';
-        alerta.style.bottom = '20px';
-        alerta.style.right = '20px';
-        alerta.style.padding = '15px 20px';
-        alerta.style.borderRadius = '8px';
-        alerta.style.zIndex = '1000';
-        alerta.style.maxWidth = '300px';
-        alerta.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-        alerta.style.transition = 'all 0.3s ease';
-
-        // Estilo baseado no tipo
-        switch (tipo) {
-            case 'success':
-                alerta.style.backgroundColor = 'rgba(76, 209, 55, 0.9)';
-                alerta.style.color = 'white';
-                break;
-            case 'error':
-                alerta.style.backgroundColor = 'rgba(232, 65, 24, 0.9)';
-                alerta.style.color = 'white';
-                break;
-            case 'warning':
-                alerta.style.backgroundColor = 'rgba(251, 197, 49, 0.9)';
-                alerta.style.color = '#2f3640';
-                break;
-            case 'info':
-            default:
-                alerta.style.backgroundColor = 'rgba(46, 134, 222, 0.9)';
-                alerta.style.color = 'white';
-        }
-
-        // Remover após o tempo definido
+        
+        // Mostrar o alerta
         setTimeout(() => {
-            alerta.style.opacity = '0';
-            alerta.style.transform = 'translateY(20px)';
+            alerta.classList.add('mostrar');
+        }, 10);
+        
+        // Remover o alerta após o tempo especificado
+        setTimeout(() => {
+            alerta.classList.remove('mostrar');
             setTimeout(() => {
                 alerta.remove();
             }, 300);
@@ -1484,5 +1459,103 @@ document.addEventListener('DOMContentLoaded', function() {
                 alertaSimples(`O recurso "${resourceName}" foi baixado com sucesso!`, 'success');
             }, 2000);
         });
+    });
+
+    // Funcionalidade de login administrativo
+    const adminLoginModal = document.getElementById('admin-login-modal');
+    const adminPasswordInput = document.getElementById('admin-password');
+    const adminLoginBtn = document.getElementById('admin-login-btn');
+    const adminLoginError = document.getElementById('admin-login-error');
+    const adminCloseBtn = document.querySelector('.admin-close');
+    const adminNavBtn = document.querySelector('.nav-btn.admin-only');
+    const adminLoggedIndicator = document.querySelector('.admin-logged-indicator');
+    
+    // Constantes de autenticação
+    const ADMIN_EMAIL = 'admin@digitalx.com';
+    const ADMIN_PASSWORD = 'adminx1515';
+    
+    // Verificar se o admin já está logado (pelo localStorage)
+    function checkAdminLogin() {
+        const isAdminLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+        if (isAdminLoggedIn) {
+            adminNavBtn.style.display = 'inline-block';
+            adminLoggedIndicator.style.display = 'block';
+        }
+    }
+    
+    // Chamar verificação ao carregar a página
+    checkAdminLogin();
+    
+    // Detectar combinação de teclas Ctrl + \
+    document.addEventListener('keydown', function(event) {
+        // Verificar se Ctrl + \ foi pressionado (keyCode 220 é a barra invertida \)
+        if (event.ctrlKey && event.keyCode === 220) {
+            event.preventDefault();
+            openAdminLoginModal();
+        }
+    });
+    
+    // Abrir modal de login administrativo
+    function openAdminLoginModal() {
+        adminLoginModal.style.display = 'block';
+        adminPasswordInput.value = '';
+        adminLoginError.textContent = '';
+        adminPasswordInput.focus();
+    }
+    
+    // Fechar modal de login administrativo
+    function closeAdminLoginModal() {
+        adminLoginModal.style.display = 'none';
+    }
+    
+    // Processar login administrativo
+    function processAdminLogin() {
+        const password = adminPasswordInput.value;
+        
+        if (password === ADMIN_PASSWORD) {
+            // Login bem-sucedido
+            localStorage.setItem('adminLoggedIn', 'true');
+            adminNavBtn.style.display = 'inline-block';
+            adminLoggedIndicator.style.display = 'block';
+            closeAdminLoginModal();
+            
+            // Exibir mensagem de boas-vindas
+            alertaSimples('Login administrativo realizado com sucesso!', 'sucesso');
+        } else {
+            // Login falhou
+            adminLoginError.textContent = 'Senha incorreta. Por favor, tente novamente.';
+            adminPasswordInput.value = '';
+            adminPasswordInput.focus();
+        }
+    }
+    
+    // Logout administrativo (ao clicar no indicador)
+    adminLoggedIndicator.addEventListener('click', function() {
+        localStorage.removeItem('adminLoggedIn');
+        adminNavBtn.style.display = 'none';
+        adminLoggedIndicator.style.display = 'none';
+        
+        // Se estiver na seção de plano de aula, redirecionar para o início
+        if (document.getElementById('plano-aula').classList.contains('active-section')) {
+            showSection('inicio');
+        }
+        
+        alertaSimples('Logout administrativo realizado com sucesso!', 'sucesso');
+    });
+    
+    // Event Listeners para o modal de login
+    adminLoginBtn.addEventListener('click', processAdminLogin);
+    adminCloseBtn.addEventListener('click', closeAdminLoginModal);
+    adminPasswordInput.addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            processAdminLogin();
+        }
+    });
+    
+    // Fechar o modal se clicar fora dele
+    window.addEventListener('click', function(event) {
+        if (event.target === adminLoginModal) {
+            closeAdminLoginModal();
+        }
     });
 }); 
