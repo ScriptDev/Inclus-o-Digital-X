@@ -1636,4 +1636,149 @@ footer {
 
 .restart-quiz-btn:hover {
     background-color: #2980b9;
+}
+
+/* Estilos para o modal de login administrativo */
+.admin-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.3s;
+}
+
+.admin-modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    max-width: 90%;
+}
+
+.admin-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+}
+
+.admin-modal-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.admin-close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.admin-close:hover {
+    color: var(--primary-color);
+}
+
+.admin-form-group {
+    margin-bottom: 15px;
+}
+
+.admin-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.admin-form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.admin-form-error {
+    color: #e74c3c;
+    font-size: 14px;
+    margin-bottom: 15px;
+    min-height: 20px;
+}
+
+#admin-login-btn {
+    width: 100%;
+}
+
+/* Botão de plano de aula (visível apenas para administradores) */
+.nav-btn.admin-only {
+    display: none;
+}
+
+/* Ícone de administrador quando logado */
+.admin-logged-indicator {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.admin-logged-indicator i {
+    font-size: 20px;
+}
+
+@media screen and (max-width: 576px) {
+    .admin-modal-content {
+        margin: 30% auto;
+        width: 300px;
+    }
+}
+
+/* Estilos para o alerta simples */
+.alerta-simples {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    transform: translateX(120%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.alerta-simples.mostrar {
+    transform: translateX(0);
+}
+
+.alerta-simples.sucesso {
+    background-color: #2ecc71;
+}
+
+.alerta-simples.erro {
+    background-color: #e74c3c;
+}
+
+.alerta-simples.aviso {
+    background-color: #f39c12;
+}
+
+.alerta-simples.info {
+    background-color: #3498db;
 } 
