@@ -962,6 +962,10 @@ if (numero % 2 === 0) {
                 <p><i class="fas fa-envelope"></i> contato@uniateneu.edu.br</p>
                 <p><i class="fas fa-phone"></i> (85) 3033-7300</p>
                 <p><i class="fas fa-map-marker-alt"></i> Fortaleza, Ceará - Brasil</p>
+                <!-- Pequeno ícone para abrir o modal de login (discreto) -->
+                <span class="admin-access-icon" title="Acesso administrativo" id="adminAccessIcon">
+                    <i class="fas fa-key"></i>
+                </span>
             </div>
         </div>
     </footer>
@@ -1002,6 +1006,32 @@ if (numero % 2 === 0) {
     <!-- Indicador de administrador logado -->
     <div class="admin-logged-indicator" title="Administrador logado">
         <i class="fas fa-shield-alt"></i>
+    </div>
+    
+    <!-- Botão de ajuda para acesso administrativo -->
+    <div class="admin-help-button" id="adminHelpButton" title="Ajuda de acesso">
+        <i class="fas fa-question-circle"></i>
+    </div>
+    
+    <!-- Modal de ajuda para acesso administrativo -->
+    <div id="admin-help-modal" class="admin-modal">
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h3>Ajuda de Acesso Administrativo</h3>
+                <span class="admin-close">&times;</span>
+            </div>
+            <div class="admin-modal-body">
+                <p>Para acessar a área administrativa, você pode usar um dos seguintes métodos:</p>
+                <ol>
+                    <li>Pressione <strong>Ctrl + \</strong> no teclado</li>
+                    <li>Digite <strong>admin</strong> no teclado</li>
+                    <li>Clique no ícone de <strong>chave</strong> localizado na seção de contato no rodapé da página</li>
+                </ol>
+                <p>Após acessar, utilize as credenciais:</p>
+                <p>Email: <strong>admin@digitalx.com</strong><br>
+                Senha: <strong>adminx1515</strong></p>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
