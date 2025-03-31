@@ -24,7 +24,7 @@
         <button class="nav-btn" data-target="programacao">Programação</button>
         <button class="nav-btn" data-target="exercicios">Exercícios</button>
         <button class="nav-btn" data-target="glossario">Glossário</button>
-        <button class="nav-btn" data-target="plano-aula">Plano de Aula</button>
+        <button class="nav-btn admin-only" data-target="plano-aula">Plano de Aula</button>
     </nav>
 
     <main>
@@ -975,6 +975,33 @@ if (numero % 2 === 0) {
             <button class="btn" id="acceptCookies">Aceitar</button>
             <button class="btn" id="rejectCookies" style="background-color: #dcdde1; color: #2f3640;">Rejeitar</button>
         </div>
+    </div>
+
+    <!-- Modal de Login Administrativo -->
+    <div id="admin-login-modal" class="admin-modal">
+        <div class="admin-modal-content">
+            <div class="admin-modal-header">
+                <h3>Login Administrativo</h3>
+                <span class="admin-close">&times;</span>
+            </div>
+            <div class="admin-modal-body">
+                <div class="admin-form-group">
+                    <label for="admin-email">Email:</label>
+                    <input type="email" id="admin-email" value="admin@digitalx.com" readonly>
+                </div>
+                <div class="admin-form-group">
+                    <label for="admin-password">Senha:</label>
+                    <input type="password" id="admin-password" placeholder="Digite sua senha">
+                </div>
+                <div class="admin-form-error" id="admin-login-error"></div>
+                <button class="btn" id="admin-login-btn">Entrar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Indicador de administrador logado -->
+    <div class="admin-logged-indicator" title="Administrador logado">
+        <i class="fas fa-shield-alt"></i>
     </div>
 
     <script src="script.js"></script>
