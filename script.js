@@ -1486,13 +1486,49 @@ document.addEventListener('DOMContentLoaded', function() {
     // Chamar verificação ao carregar a página
     checkAdminLogin();
     
-    // Detectar combinação de teclas Ctrl + \
+    // Implementar um código secreto digitado ("admin")
+    let secretCode = '';
+    const correctCode = 'admin';
+    const timeoutDelay = 1500; // tempo em ms para resetar o código digitado
+    let resetTimeout;
+    
+    // 1. Detectar atalho Ctrl + \
     document.addEventListener('keydown', function(event) {
-        // Verificar se Ctrl + \ foi pressionado (keyCode 220 é a barra invertida \)
-        if (event.ctrlKey && event.keyCode === 220) {
+        // Métodos múltiplos para detectar a barra invertida (\)
+        const isBackslash = 
+            event.keyCode === 220 || 
+            event.code === 'Backslash' || 
+            event.key === '\\' ||
+            event.key === '|' ||  // Em alguns teclados ABNT e outros layouts
+            event.which === 220;
+
+        if (event.ctrlKey && isBackslash) {
             event.preventDefault();
+            console.log('Atalho Ctrl + \\ detectado!');
+            openAdminLoginModal();
+            return;
+        }
+        
+        // 2. Detectar código digitado ("admin")
+        // Ignorar quando teclas de controle estão pressionadas
+        if (event.ctrlKey || event.altKey || event.metaKey) return;
+        
+        // Limpar o timeout existente
+        clearTimeout(resetTimeout);
+        
+        // Adicionar a tecla pressionada ao código
+        secretCode += event.key.toLowerCase();
+        
+        // Verificar se o código está correto
+        if (secretCode.includes(correctCode)) {
+            secretCode = ''; // Limpar o código
             openAdminLoginModal();
         }
+        
+        // Resetar o código após um tempo
+        resetTimeout = setTimeout(function() {
+            secretCode = '';
+        }, timeoutDelay);
     });
     
     // Abrir modal de login administrativo
@@ -1556,6 +1592,38 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('click', function(event) {
         if (event.target === adminLoginModal) {
             closeAdminLoginModal();
+        }
+    });
+    
+    // Adicionar evento de clique para o ícone de acesso administrativo no rodapé
+    const adminAccessIcon = document.getElementById('adminAccessIcon');
+    if (adminAccessIcon) {
+        adminAccessIcon.addEventListener('click', function(event) {
+            event.preventDefault();
+            openAdminLoginModal();
+        });
+    }
+    
+    // Funcionalidade para o botão de ajuda de acesso administrativo
+    const adminHelpButton = document.getElementById('adminHelpButton');
+    const adminHelpModal = document.getElementById('admin-help-modal');
+    const adminHelpCloseBtn = adminHelpModal.querySelector('.admin-close');
+    
+    function openAdminHelpModal() {
+        adminHelpModal.style.display = 'block';
+    }
+    
+    function closeAdminHelpModal() {
+        adminHelpModal.style.display = 'none';
+    }
+    
+    adminHelpButton.addEventListener('click', openAdminHelpModal);
+    adminHelpCloseBtn.addEventListener('click', closeAdminHelpModal);
+    
+    // Fechar o modal de ajuda se clicar fora dele
+    window.addEventListener('click', function(event) {
+        if (event.target === adminHelpModal) {
+            closeAdminHelpModal();
         }
     });
 }); 
