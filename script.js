@@ -2465,7 +2465,8 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             
-            const resourceName = this.parentElement.querySelector('h4').textContent;
+            const resourceHeading = this.parentElement.querySelector('h4');
+            const resourceName = resourceHeading ? resourceHeading.textContent : 'recurso';
             alertaSimples(`O download de "${resourceName}" começará em breve...`, 'info', 5000);
             
             // Simular download após 2 segundos
@@ -4091,12 +4092,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Alerta simples personalizado
     function atualizarExercicioQuiz(event) {
-        console.log("[Diagnóstico] Atualizando exercício de quiz");
-        const exercicioId = event.target.dataset.id;
+        const exercicioId = event.target ? event.target.dataset.id : 'exercicios-quiz'; // Usar fallback se não tiver evento
         const exercicioDiv = document.getElementById(exercicioId);
         
         if (!exercicioDiv) {
             console.error(`[Diagnóstico] Div do exercício ${exercicioId} não encontrada!`);
+            const mainExerciseDiv = document.querySelector('.quiz-exercise');
+            if (mainExerciseDiv) {
+                // Tentar usar qualquer exercício de quiz disponível na página
+                atualizarQuizGenerico(mainExerciseDiv);
+                return;
+            }
+            // Se nenhum exercício de quiz for encontrado, sair da função
             return;
         }
 
@@ -4499,4 +4506,951 @@ document.addEventListener('DOMContentLoaded', function() {
         // Carregar ranking inicialmente
         loadRanking();
     }
-}); 
+
+    // Função principal para inicializar controles admin do plano de aula
+    function initPlanoDaAulaAdmin() {
+        // Verificar se o usuário está logado como admin
+        if (!isAdminLogged()) return;
+        
+        console.log('Inicializando controles de administrador para o plano de aula');
+        
+        // Inicializar as diferentes seções do plano de aula
+        initRoteiroControls();
+        initResourcesManager();
+        initFichaControls();
+    }
+
+    // Funções para gerenciamento do Roteiro da Aula
+    function initRoteiroControls() {
+        const planoAulaSection = document.getElementById('plano-aula');
+        if (!planoAulaSection) return;
+        
+        const roteiroSection = planoAulaSection.querySelector('.roteiro-aula-content') || 
+                              planoAulaSection.querySelector('.roteiro-container');
+        if (!roteiroSection) {
+            console.error("Seção de roteiro não encontrada");
+            return;
+        }
+        
+        // Certifique-se de que os botões originais se existirem, sejam removidos
+        const existingEditBtn = planoAulaSection.querySelector('.editar-roteiro-btn, .admin-edit-btn');
+        if (existingEditBtn) existingEditBtn.remove();
+        
+        const existingActionButtons = planoAulaSection.querySelector('.admin-action-buttons');
+        if (existingActionButtons) existingActionButtons.remove();
+        
+        // Adicionar área de edição de texto se não existir
+        let roteiroEditor = planoAulaSection.querySelector('#roteiro-editor');
+        if (!roteiroEditor) {
+            roteiroEditor = document.createElement('div');
+            roteiroEditor.id = 'roteiro-editor';
+            roteiroEditor.className = 'hidden';
+            roteiroEditor.innerHTML = `
+                <textarea id="roteiro-textarea" class="admin-textarea" rows="15" placeholder="Conteúdo do roteiro"></textarea>
+                <p class="editor-hint"><i class="fas fa-info-circle"></i> Use formatação HTML simples como &lt;strong&gt;, &lt;ul&gt; e &lt;li&gt; para estruturar o conteúdo.</p>
+            `;
+            roteiroSection.parentNode.insertBefore(roteiroEditor, roteiroSection.nextSibling);
+        }
+        
+        // Criar botões de ação
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-primary editar-roteiro-btn';
+        editBtn.innerHTML = '<i class="fas fa-edit"></i> Editar Roteiro';
+        roteiroSection.parentNode.insertBefore(editBtn, roteiroSection.nextSibling);
+        
+        const actionButtons = document.createElement('div');
+        actionButtons.className = 'admin-action-buttons hidden';
+        actionButtons.innerHTML = `
+            <button class="btn btn-success save-roteiro-btn">
+                <i class="fas fa-save"></i> Salvar Alterações
+            </button>
+            <button class="btn btn-danger cancel-roteiro-btn">
+                <i class="fas fa-times"></i> Cancelar
+            </button>
+        `;
+        roteiroSection.parentNode.insertBefore(actionButtons, roteiroSection.nextSibling);
+        
+        // Armazenar o conteúdo original para possível cancelamento
+        let originalContent = roteiroSection.innerHTML;
+        
+        // Adicionar eventos para os botões
+        editBtn.addEventListener('click', () => {
+            // Preencher a área de edição com o conteúdo atual
+            const textarea = document.getElementById('roteiro-textarea');
+            if (textarea) {
+                textarea.value = roteiroSection.innerHTML;
+            }
+            
+            // Mostrar editor e esconder visualização
+            roteiroSection.classList.add('hidden');
+            roteiroEditor.classList.remove('hidden');
+            
+            // Mostrar botões de ação e esconder botão de editar
+            actionButtons.classList.remove('hidden');
+            editBtn.classList.add('hidden');
+        });
+        
+        const saveBtn = actionButtons.querySelector('.save-roteiro-btn');
+        const cancelBtn = actionButtons.querySelector('.cancel-roteiro-btn');
+        
+        saveBtn.addEventListener('click', () => {
+            // Obter o novo conteúdo do textarea
+            const textarea = document.getElementById('roteiro-textarea');
+            const newContent = textarea ? textarea.value : '';
+            
+            // Atualizar o conteúdo do roteiro
+            roteiroSection.innerHTML = newContent;
+            
+            // Salvar no localStorage
+            localStorage.setItem('roteiro_aula_content', newContent);
+            
+            // Esconder editor e mostrar visualização
+            roteiroEditor.classList.add('hidden');
+            roteiroSection.classList.remove('hidden');
+            
+            // Mostrar botão de editar e esconder botões de ação
+            actionButtons.classList.add('hidden');
+            editBtn.classList.remove('hidden');
+            
+            // Atualizar o conteúdo original
+            originalContent = newContent;
+            
+            // Mostrar notificação
+            alertaSimples('Roteiro da aula salvo com sucesso!', 'sucesso');
+        });
+        
+        cancelBtn.addEventListener('click', () => {
+            // Restaurar o conteúdo original
+            roteiroSection.innerHTML = originalContent;
+            
+            // Esconder editor e mostrar visualização
+            roteiroEditor.classList.add('hidden');
+            roteiroSection.classList.remove('hidden');
+            
+            // Mostrar botão de editar e esconder botões de ação
+            actionButtons.classList.add('hidden');
+            editBtn.classList.remove('hidden');
+        });
+        
+        // Carregar conteúdo salvo, se existir
+        const savedContent = localStorage.getItem('roteiro_aula_content');
+        if (savedContent && savedContent.trim() !== '') {
+            roteiroSection.innerHTML = savedContent;
+            originalContent = savedContent;
+        }
+    }
+
+    // Funções para gerenciamento de Recursos Adicionais
+    function initResourcesManager() {
+        const resourcesSection = document.getElementById('recursos-adicionais');
+        if (!resourcesSection) return;
+        
+        // Adicionar botão de upload
+        const uploadContainer = document.createElement('div');
+        uploadContainer.className = 'admin-upload-container';
+        uploadContainer.innerHTML = `
+            <h4>Gerenciar Recursos</h4>
+            <div class="admin-upload-controls">
+                <div class="upload-type-selector">
+                    <button class="btn btn-sm upload-type-btn active" data-type="documento">Documentos</button>
+                    <button class="btn btn-sm upload-type-btn" data-type="video">Vídeos</button>
+                    <button class="btn btn-sm upload-type-btn" data-type="link">Links</button>
+                </div>
+                <div class="upload-inputs">
+                    <div class="upload-input-group" id="documento-upload">
+                        <label>Adicionar Documento:</label>
+                        <input type="file" id="documento-file" class="admin-file-input">
+                        <input type="text" id="documento-name" placeholder="Nome do documento" class="admin-input">
+                        <button class="btn btn-primary" id="upload-documento-btn">Adicionar</button>
+                    </div>
+                    <div class="upload-input-group hidden" id="video-upload">
+                        <label>Adicionar Vídeo:</label>
+                        <input type="text" id="video-url" placeholder="URL do vídeo (YouTube)" class="admin-input">
+                        <input type="text" id="video-name" placeholder="Título do vídeo" class="admin-input">
+                        <button class="btn btn-primary" id="upload-video-btn">Adicionar</button>
+                    </div>
+                    <div class="upload-input-group hidden" id="link-upload">
+                        <label>Adicionar Link:</label>
+                        <input type="text" id="link-url" placeholder="URL do site" class="admin-input">
+                        <input type="text" id="link-name" placeholder="Nome do link" class="admin-input">
+                        <button class="btn btn-primary" id="upload-link-btn">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Adicionar no início da seção de recursos
+        resourcesSection.insertBefore(uploadContainer, resourcesSection.firstChild);
+        
+        // Adicionar eventos aos botões de seleção de tipo
+        const typeButtons = uploadContainer.querySelectorAll('.upload-type-btn');
+        typeButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Remover classe ativa de todos os botões
+                typeButtons.forEach(b => b.classList.remove('active'));
+                
+                // Adicionar classe ativa ao botão clicado
+                e.target.classList.add('active');
+                
+                // Mostrar o grupo de input correspondente
+                const type = e.target.dataset.type;
+                const inputGroups = uploadContainer.querySelectorAll('.upload-input-group');
+                inputGroups.forEach(group => {
+                    group.classList.add('hidden');
+                });
+                
+                const selectedGroup = document.getElementById(`${type}-upload`);
+                if (selectedGroup) {
+                    selectedGroup.classList.remove('hidden');
+                }
+            });
+        });
+        
+        // Adicionar eventos para os botões de upload
+        const documentoBtn = document.getElementById('upload-documento-btn');
+        const videoBtn = document.getElementById('upload-video-btn');
+        const linkBtn = document.getElementById('upload-link-btn');
+        
+        if (documentoBtn) {
+            documentoBtn.addEventListener('click', () => {
+                const fileInput = document.getElementById('documento-file');
+                const nameInput = document.getElementById('documento-name');
+                
+                if (fileInput.files.length > 0 && nameInput.value.trim()) {
+                    handleResourceUpload({
+                        type: 'documento',
+                        name: nameInput.value.trim(),
+                        file: fileInput.files[0]
+                    });
+                    
+                    // Limpar campos
+                    fileInput.value = '';
+                    nameInput.value = '';
+                } else {
+                    showNotification('Erro', 'Por favor, selecione um arquivo e forneça um nome.', 'error');
+                }
+            });
+        }
+        
+        if (videoBtn) {
+            videoBtn.addEventListener('click', () => {
+                const urlInput = document.getElementById('video-url');
+                const nameInput = document.getElementById('video-name');
+                
+                if (urlInput.value.trim() && nameInput.value.trim()) {
+                    handleResourceUpload({
+                        type: 'video',
+                        name: nameInput.value.trim(),
+                        url: urlInput.value.trim()
+                    });
+                    
+                    // Limpar campos
+                    urlInput.value = '';
+                    nameInput.value = '';
+                } else {
+                    showNotification('Erro', 'Por favor, forneça a URL do vídeo e um título.', 'error');
+                }
+            });
+        }
+        
+        if (linkBtn) {
+            linkBtn.addEventListener('click', () => {
+                const urlInput = document.getElementById('link-url');
+                const nameInput = document.getElementById('link-name');
+                
+                if (urlInput.value.trim() && nameInput.value.trim()) {
+                    handleResourceUpload({
+                        type: 'link',
+                        name: nameInput.value.trim(),
+                        url: urlInput.value.trim()
+                    });
+                    
+                    // Limpar campos
+                    urlInput.value = '';
+                    nameInput.value = '';
+                } else {
+                    showNotification('Erro', 'Por favor, forneça a URL e um nome para o link.', 'error');
+                }
+            });
+        }
+        
+        // Carregar recursos salvos
+        loadSavedResources();
+    }
+
+    function handleResourceUpload(data) {
+        // Simulação de upload (em um sistema real, isto seria uma requisição para um servidor)
+        console.log('Enviando recurso:', data);
+        
+        // Simulação de espera pelo upload
+        showNotification('Informação', 'Processando recurso...', 'info');
+        
+        setTimeout(() => {
+            // Simulação de sucesso no upload
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('pt-BR');
+            
+            // Salvar informações do recurso
+            saveResourceInfo(data.type, data.name, 
+                           data.type === 'documento' ? data.file.name : data.url,
+                           dateStr);
+            
+            // Atualizar a lista de recursos
+            updateResourcesList();
+            
+            // Mostrar notificação de sucesso
+            showNotification('Sucesso', 'Recurso adicionado com sucesso!', 'success');
+        }, 1000);
+    }
+
+    function handleResourceDownload(event) {
+        event.preventDefault();
+        
+        const resourceCard = event.target.closest('.resource-card');
+        let resourceName = 'recurso';
+        
+        if (resourceCard) {
+            const resourceHeading = resourceCard.querySelector('h4');
+            resourceName = resourceHeading ? resourceHeading.textContent : 'recurso';
+        }
+        
+        alertaSimples(`O download de "${resourceName}" começará em breve...`, 'info', 5000);
+        
+        // Simular download após 2 segundos
+        setTimeout(() => {
+            alertaSimples(`O recurso "${resourceName}" foi baixado com sucesso!`, 'sucesso');
+        }, 2000);
+    }
+
+    function handleResourceImport(event) {
+        event.preventDefault();
+        
+        const resourceCard = event.target.closest('.resource-card');
+        let resourceName = 'recurso';
+        
+        if (resourceCard) {
+            const resourceHeading = resourceCard.querySelector('h4');
+            resourceName = resourceHeading ? resourceHeading.textContent : 'recurso';
+        }
+        
+        alertaSimples(`Importando "${resourceName}"...`, 'info', 2000);
+        
+        // Simular importação após 2 segundos
+        setTimeout(() => {
+            alertaSimples(`O recurso "${resourceName}" foi importado com sucesso!`, 'sucesso');
+        }, 3000);
+    }
+
+    // Função para atualizar o layout visual dos cards de recursos
+    function updateResourceCards() {
+        const resourceCards = document.querySelectorAll('.resource-card');
+        
+        resourceCards.forEach(card => {
+            // Verificar se o card já foi atualizado
+            if (card.querySelector('.resource-card-content')) return;
+            
+            // Obter elementos existentes
+            const icon = card.querySelector('i');
+            const title = card.querySelector('h4');
+            const description = card.querySelector('p');
+            const buttons = Array.from(card.querySelectorAll('.btn'));
+            
+            // Limpar o card
+            card.innerHTML = '';
+            
+            // Criar nova estrutura
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'resource-card-content';
+            
+            // Adicionar ícone, título e descrição se existirem
+            if (icon) contentDiv.appendChild(icon);
+            if (title) contentDiv.appendChild(title);
+            if (description) contentDiv.appendChild(description);
+            
+            // Adicionar conteúdo ao card
+            card.appendChild(contentDiv);
+            
+            // Criar container para botões
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'resource-card-actions';
+            
+            // Re-criar botões com novos estilos
+            if (buttons.length > 0) {
+                buttons.forEach(btn => {
+                    const isDownloadBtn = btn.textContent.trim().toLowerCase().includes('download');
+                    const isImportBtn = btn.textContent.trim().toLowerCase().includes('importar');
+                    const isLinkBtn = btn.textContent.trim().toLowerCase().includes('acessar');
+                    
+                    const newBtn = document.createElement('button');
+                    newBtn.className = `btn-sm ${isDownloadBtn ? 'btn-download' : isImportBtn ? 'btn-import' : isLinkBtn ? 'btn-link' : ''}`;
+                    
+                    if (isDownloadBtn) {
+                        newBtn.innerHTML = '<i class="fas fa-download"></i> Download';
+                        newBtn.addEventListener('click', handleResourceDownload);
+                    } else if (isImportBtn) {
+                        newBtn.innerHTML = '<i class="fas fa-file-import"></i> Importar';
+                        newBtn.addEventListener('click', handleResourceImport);
+                    } else if (isLinkBtn) {
+                        newBtn.innerHTML = '<i class="fas fa-external-link-alt"></i> Acessar';
+                    } else {
+                        newBtn.textContent = btn.textContent;
+                    }
+                    
+                    actionsDiv.appendChild(newBtn);
+                });
+            }
+            
+            // Adicionar botões ao card
+            card.appendChild(actionsDiv);
+        });
+    }
+
+    function saveResourceInfo(type, name, fileType, date) {
+        // Obter recursos salvos
+        let savedResources = JSON.parse(localStorage.getItem('saved_resources') || '[]');
+        
+        // Adicionar novo recurso
+        const newResource = {
+            id: Date.now(), // ID único baseado no timestamp
+            type: type,
+            name: name,
+            fileType: fileType,
+            date: date
+        };
+        
+        savedResources.push(newResource);
+        
+        // Salvar de volta ao localStorage
+        localStorage.setItem('saved_resources', JSON.stringify(savedResources));
+    }
+
+    function loadSavedResources() {
+        // Obter recursos salvos
+        const savedResources = JSON.parse(localStorage.getItem('saved_resources') || '[]');
+        
+        // Atualizar a interface
+        updateResourcesList(savedResources);
+    }
+
+    function updateResourcesList() {
+        // Obter recursos salvos
+        const savedResources = JSON.parse(localStorage.getItem('saved_resources') || '[]');
+        
+        // Categorizar recursos
+        const documentos = savedResources.filter(r => r.type === 'documento');
+        const videos = savedResources.filter(r => r.type === 'video');
+        const links = savedResources.filter(r => r.type === 'link');
+        
+        // Atualizar cada seção
+        updateResourceCategory('recursos-documentos', documentos, 'documento');
+        updateResourceCategory('recursos-videos', videos, 'video');
+        updateResourceCategory('recursos-links', links, 'link');
+    }
+
+    function updateResourceCategory(containerId, resources, type) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        // Limpar conteúdo atual
+        container.innerHTML = '';
+        
+        // Se não houver recursos, mostrar mensagem
+        if (resources.length === 0) {
+            container.innerHTML = '<p class="text-muted">Nenhum recurso disponível.</p>';
+            return;
+        }
+        
+        // Criar tabela de recursos
+        const table = document.createElement('table');
+        table.className = 'table resources-table';
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Data</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+        
+        const tbody = table.querySelector('tbody');
+        
+        // Adicionar cada recurso à tabela
+        resources.forEach(resource => {
+            const row = document.createElement('tr');
+            
+            // Ícone baseado no tipo
+            let icon = '';
+            if (type === 'documento') icon = '<i class="fas fa-file-alt"></i>';
+            else if (type === 'video') icon = '<i class="fas fa-video"></i>';
+            else if (type === 'link') icon = '<i class="fas fa-link"></i>';
+            
+            row.innerHTML = `
+                <td>${icon} ${resource.name}</td>
+                <td>${resource.date}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary download-resource" data-id="${resource.id}">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    ${isAdminLogged() ? `
+                    <button class="btn btn-sm btn-danger delete-resource" data-id="${resource.id}">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                    ` : ''}
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+        });
+        
+        container.appendChild(table);
+        
+        // Adicionar eventos para os botões
+        const downloadBtns = container.querySelectorAll('.download-resource');
+        downloadBtns.forEach(btn => {
+            btn.addEventListener('click', handleResourceDownload);
+        });
+        
+        const deleteBtns = container.querySelectorAll('.delete-resource');
+        deleteBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const resourceId = e.currentTarget.dataset.id;
+                deleteResource(resourceId);
+            });
+        });
+    }
+
+    function deleteResource(id) {
+        if (confirm('Tem certeza que deseja excluir este recurso?')) {
+            // Obter recursos salvos
+            let savedResources = JSON.parse(localStorage.getItem('saved_resources') || '[]');
+            
+            // Filtrar para remover o recurso
+            savedResources = savedResources.filter(r => r.id != id);
+            
+            // Salvar de volta ao localStorage
+            localStorage.setItem('saved_resources', JSON.stringify(savedResources));
+            
+            // Atualizar a interface
+            updateResourcesList();
+            
+            // Mostrar notificação
+            showNotification('Sucesso', 'Recurso removido com sucesso!', 'success');
+        }
+    }
+
+    // ... existing code ...
+
+    // Inicialização do módulo quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        // Verificar se estamos na seção de plano de aula
+        const planoDaAulaSection = document.getElementById('plano-aula');
+        if (planoDaAulaSection) {
+            initPlanoDaAulaAdmin();
+        }
+    });
+
+    // Função auxiliar para verificar se o admin está logado
+    function isAdminLogged() {
+        return localStorage.getItem('admin_logged') === 'true';
+    }
+
+    // Funções para a Ficha de Acompanhamento
+    function initFichaControls() {
+        const downloadBtn = document.querySelector('.download-ficha-btn');
+        const editBtn = document.querySelector('.edit-ficha-btn');
+        const saveBtn = document.querySelector('.save-ficha-btn');
+        
+        if (!isAdminLogged()) {
+            // Se não é admin, apenas habilitar download
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', handleFichaDownload);
+            }
+            return;
+        }
+        
+        console.log('Inicializando controles de ficha de acompanhamento');
+        
+        // Verificar se elementos existem
+        if (!downloadBtn || !editBtn || !saveBtn) {
+            console.warn('Elementos da ficha de acompanhamento não encontrados');
+            return;
+        }
+        
+        // Adicionar eventos aos botões
+        downloadBtn.addEventListener('click', handleFichaDownload);
+        editBtn.addEventListener('click', () => {
+            initFichaEditor();
+            
+            // Alternar visibilidade dos componentes
+            document.querySelector('.ficha-preview').classList.add('hidden');
+            document.querySelector('.ficha-editor').classList.remove('hidden');
+            
+            // Atualizar estado dos botões
+            editBtn.classList.add('hidden');
+            saveBtn.classList.remove('hidden');
+        });
+        
+        saveBtn.addEventListener('click', () => {
+            // Salvar alterações da ficha
+            saveFichaChanges();
+            
+            // Alternar visibilidade dos componentes
+            document.querySelector('.ficha-editor').classList.add('hidden');
+            document.querySelector('.ficha-preview').classList.remove('hidden');
+            
+            // Atualizar estado dos botões
+            saveBtn.classList.add('hidden');
+            editBtn.classList.remove('hidden');
+            
+            // Mostrar notificação
+            showNotification('Sucesso', 'Ficha de acompanhamento salva com sucesso!', 'success');
+        });
+        
+        // Adicionar botões para adicionar seções
+        const addSectionBtn = document.querySelector('.add-ficha-section-btn');
+        const addTableBtn = document.querySelector('.add-ficha-table-btn');
+        
+        if (addSectionBtn) {
+            addSectionBtn.addEventListener('click', addFichaSection);
+        }
+        
+        if (addTableBtn) {
+            addTableBtn.addEventListener('click', addFichaTable);
+        }
+        
+        // Carregar ficha salva
+        loadSavedFicha();
+    }
+
+    function handleFichaDownload() {
+        // Simulação de download da ficha
+        showNotification('Download', 'O download da ficha de acompanhamento começaria agora em um sistema real.', 'info');
+        
+        // Em uma implementação real, seria gerado um PDF ou documento para download
+        console.log('Solicitação de download da ficha de acompanhamento');
+    }
+
+    function initFichaEditor() {
+        const container = document.querySelector('.ficha-sections-container');
+        if (!container) {
+            console.warn('Container de seções da ficha não encontrado');
+            return;
+        }
+        
+        // Limpar container
+        container.innerHTML = '';
+        
+        // Carregar conteúdo salvo ou adicionar seções padrão
+        const savedSections = JSON.parse(localStorage.getItem('ficha_sections') || '[]');
+        
+        if (savedSections.length > 0) {
+            // Carregar seções salvas
+            savedSections.forEach(section => {
+                addFichaEditorSection(container, section.title, section.content);
+            });
+        } else {
+            // Adicionar seções padrão
+            addFichaEditorSection(container, 'Informações do Participante', `
+                <div class="ficha-campo-editor">
+                    <input type="text" value="Nome do Participante:" class="admin-input">
+                </div>
+                <div class="ficha-campo-editor">
+                    <input type="text" value="Data:" class="admin-input">
+                </div>
+                <div class="ficha-campo-editor">
+                    <input type="text" value="Módulo:" class="admin-input">
+                </div>
+            `);
+            
+            addFichaEditorSection(container, 'Tabela de Habilidades', `
+                <table class="ficha-editor-table">
+                    <thead>
+                        <tr>
+                            <th><input type="text" value="Habilidade" class="admin-input"></th>
+                            <th><input type="text" value="Não Desenvolvida" class="admin-input"></th>
+                            <th><input type="text" value="Em Desenvolvimento" class="admin-input"></th>
+                            <th><input type="text" value="Desenvolvida" class="admin-input"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" value="Uso do mouse" class="admin-input"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" value="Uso do teclado" class="admin-input"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" value="Navegação na internet" class="admin-input"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                            <td><input type="checkbox"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-sm add-table-row-btn">Adicionar Linha</button>
+            `);
+            
+            addFichaEditorSection(container, 'Observações', `
+                <div class="ficha-campo-editor">
+                    <input type="text" value="Observações:" class="admin-input">
+                    <textarea class="admin-textarea" rows="4" placeholder="Campo para observações"></textarea>
+                </div>
+            `);
+        }
+        
+        // Adicionar eventos para os botões de adicionar linha
+        const addRowBtns = container.querySelectorAll('.add-table-row-btn');
+        addRowBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const table = this.previousElementSibling;
+                addRowToTable(table);
+            });
+        });
+    }
+
+    function addFichaEditorSection(container, title, content) {
+        const section = document.createElement('div');
+        section.className = 'ficha-section-item';
+        section.innerHTML = `
+            <div class="ficha-section-header">
+                <div class="ficha-section-title">
+                    <input type="text" value="${title}" class="admin-input section-title-input">
+                </div>
+                <div class="ficha-section-actions">
+                    <button class="ficha-section-action move-up-btn" title="Mover para cima">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button class="ficha-section-action move-down-btn" title="Mover para baixo">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                    <button class="ficha-section-action delete-section-btn" title="Remover seção">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="ficha-section-content">
+                ${content}
+            </div>
+        `;
+        
+        container.appendChild(section);
+        
+        // Adicionar eventos para as ações
+        const moveUpBtn = section.querySelector('.move-up-btn');
+        const moveDownBtn = section.querySelector('.move-down-btn');
+        const deleteBtn = section.querySelector('.delete-section-btn');
+        
+        moveUpBtn.addEventListener('click', () => {
+            const prevSection = section.previousElementSibling;
+            if (prevSection) {
+                container.insertBefore(section, prevSection);
+            }
+        });
+        
+        moveDownBtn.addEventListener('click', () => {
+            const nextSection = section.nextElementSibling;
+            if (nextSection) {
+                container.insertBefore(nextSection, section);
+            }
+        });
+        
+        deleteBtn.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja remover esta seção?')) {
+                section.remove();
+            }
+        });
+    }
+
+    function addFichaSection() {
+        const container = document.querySelector('.ficha-sections-container');
+        if (!container) return;
+        
+        addFichaEditorSection(container, 'Nova Seção', `
+            <div class="ficha-campo-editor">
+                <input type="text" placeholder="Nome do campo" class="admin-input">
+            </div>
+        `);
+    }
+
+    function addFichaTable() {
+        const container = document.querySelector('.ficha-sections-container');
+        if (!container) return;
+        
+        addFichaEditorSection(container, 'Nova Tabela', `
+            <table class="ficha-editor-table">
+                <thead>
+                    <tr>
+                        <th><input type="text" placeholder="Cabeçalho 1" class="admin-input"></th>
+                        <th><input type="text" placeholder="Cabeçalho 2" class="admin-input"></th>
+                        <th><input type="text" placeholder="Cabeçalho 3" class="admin-input"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" placeholder="Valor 1" class="admin-input"></td>
+                        <td><input type="text" placeholder="Valor 2" class="admin-input"></td>
+                        <td><input type="text" placeholder="Valor 3" class="admin-input"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-sm add-table-row-btn">Adicionar Linha</button>
+        `);
+        
+        // Adicionar evento para o novo botão
+        const addRowBtn = container.querySelector('.add-table-row-btn:last-child');
+        if (addRowBtn) {
+            addRowBtn.addEventListener('click', function() {
+                const table = this.previousElementSibling;
+                addRowToTable(table);
+            });
+        }
+    }
+
+    function addRowToTable(table) {
+        if (!table) return;
+        
+        const tbody = table.querySelector('tbody');
+        const thead = table.querySelector('thead');
+        
+        if (!tbody || !thead) return;
+        
+        const columns = thead.querySelectorAll('th').length;
+        
+        if (columns) {
+            const row = document.createElement('tr');
+            
+            for (let i = 0; i < columns; i++) {
+                const cell = document.createElement('td');
+                
+                if (i === 0) {
+                    cell.innerHTML = `<input type="text" placeholder="Nova linha" class="admin-input">`;
+                } else {
+                    cell.innerHTML = `<input type="checkbox">`;
+                }
+                
+                row.appendChild(cell);
+            }
+            
+            tbody.appendChild(row);
+        }
+    }
+
+    function saveFichaChanges() {
+        const container = document.querySelector('.ficha-sections-container');
+        if (!container) return;
+        
+        const sections = container.querySelectorAll('.ficha-section-item');
+        const sectionsData = [];
+        
+        sections.forEach(section => {
+            const titleInput = section.querySelector('.section-title-input');
+            const contentDiv = section.querySelector('.ficha-section-content');
+            
+            if (titleInput && contentDiv) {
+                sectionsData.push({
+                    title: titleInput.value,
+                    content: contentDiv.innerHTML
+                });
+            }
+        });
+        
+        // Salvar no localStorage
+        localStorage.setItem('ficha_sections', JSON.stringify(sectionsData));
+        
+        // Atualizar a visualização da ficha
+        updateFichaPreview(sectionsData);
+    }
+
+    function loadSavedFicha() {
+        const savedSections = JSON.parse(localStorage.getItem('ficha_sections') || '[]');
+        
+        // Atualizar a visualização da ficha
+        updateFichaPreview(savedSections);
+    }
+
+    function updateFichaPreview(sections) {
+        const preview = document.querySelector('.ficha-preview');
+        if (!preview) return;
+        
+        if (sections.length === 0) {
+            preview.innerHTML = '<p>Nenhuma seção configurada na ficha de acompanhamento.</p>';
+            return;
+        }
+        
+        let html = '';
+        
+        sections.forEach(section => {
+            html += `
+                <div class="ficha-preview-section">
+                    <h3>${section.title}</h3>
+                    <div class="ficha-preview-content">
+                        ${section.content}
+                    </div>
+                </div>
+            `;
+        });
+        
+        preview.innerHTML = html;
+    }
+
+    // Inicialização do módulo quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        // ... existing code ...
+        
+        // Inicializar as funções do plano de aula em modo administrador
+        initPlanoDaAulaAdmin();
+        
+        // Atualizar cards de recursos
+        if (typeof updateResourceCards === 'function') {
+            updateResourceCards();
+        }
+        
+        // ... existing code ...
+    });
+
+    // Função auxiliar para atualizar qualquer quiz na página
+    function atualizarQuizGenerico(quizExercise) {
+        if (!quizExercise) return;
+
+        // Obter questões personalizadas do LocalStorage
+        let questoesPersonalizadas = [];
+        try {
+            const questoesJson = localStorage.getItem('questoes_personalizadas');
+            if (questoesJson) {
+                questoesPersonalizadas = JSON.parse(questoesJson);
+                console.log(`[Diagnóstico] Encontradas ${questoesPersonalizadas.length} questões personalizadas`);
+            }
+        } catch (error) {
+            console.error("[Diagnóstico] Erro ao carregar questões personalizadas:", error);
+            questoesPersonalizadas = [];
+        }
+
+        // Filtrar apenas questões visíveis
+        const questoesVisiveis = questoesPersonalizadas.filter(q => q.visivel === true);
+        console.log(`[Diagnóstico] Questões visíveis: ${questoesVisiveis.length}`);
+        
+        const quizContainer = quizExercise.querySelector('.quiz-container');
+        if (!quizContainer) {
+            console.error(`[Diagnóstico] Container do quiz não encontrado!`);
+            return;
+        }
+
+        const questionsContainer = quizContainer.querySelector('.quiz-questions');
+        if (!questionsContainer) {
+            console.error(`[Diagnóstico] Container de questões não encontrado!`);
+            return;
+        }
+
+        // Atualizar o quiz com as questões disponíveis
+        // Continuar com a mesma lógica da função original
+        // ... restante da lógica ...
+    }
+});
