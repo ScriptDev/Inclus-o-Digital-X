@@ -10,7 +10,7 @@
 <body>
     <header>
         <div class="logo-container">
-            <img src="https://www.uniateneu.edu.br/wp-content/uploads/2022/09/cropped-logo.png" alt="Logo UniAteneu" class="logo">
+            <img src="images/logo-uniateneu.png" alt="Logo UniAteneu" class="logo">
         </div>
         <h1>Inclusão Digital e Programação Básica</h1>
         <p class="subtitle">Alfabetizando para o Mundo Digital</p>
@@ -404,7 +404,7 @@
                     </div>
                 </div>
                 <div class="browser-content">
-                    <img src="https://www.uniateneu.edu.br/wp-content/uploads/2022/09/cropped-logo.png" alt="UniAteneu" class="browser-logo">
+                    <img src="images/logo-uniateneu.png" alt="UniAteneu" class="browser-logo">
                     <h3>Bem-vindo à Internet!</h3>
                     <p>A internet é uma rede global de computadores conectados.</p>
                     <div class="search-container">
@@ -922,90 +922,143 @@ if (numero % 2 === 0) {
                     </div>
                 </div>
                 
+                <!-- Modificando o Roteiro da Aula para permitir edição e salvar mudanças -->
                 <div class="accordion-item">
                     <div class="accordion-header">Roteiro da Aula (1 hora)</div>
                     <div class="accordion-content">
                         <h3>Estrutura Sugerida</h3>
-                        <ol>
-                            <li><strong>Introdução (10 minutos)</strong>
-                                <ul>
-                                    <li>Apresentação dos participantes e instrutores</li>
-                                    <li>Breve explicação sobre a importância da inclusão digital</li>
-                                    <li>Verificação do conhecimento prévio dos participantes</li>
-                                </ul>
-                            </li>
-                            <li><strong>Conteúdo Principal (35 minutos)</strong>
-                                <ul>
-                                    <li>Explicação dos conceitos básicos (5-10 min)</li>
-                                    <li>Demonstração prática (10-15 min)</li>
-                                    <li>Atividade guiada com os participantes (15-20 min)</li>
-                                </ul>
-                            </li>
-                            <li><strong>Exercícios Práticos (10 minutos)</strong>
-                                <ul>
-                                    <li>Aplicação dos conhecimentos em exercícios simples</li>
-                                    <li>Auxílio individualizado conforme necessário</li>
-                                </ul>
-                            </li>
-                            <li><strong>Encerramento (5 minutos)</strong>
-                                <ul>
-                                    <li>Recapitulação do conteúdo aprendido</li>
-                                    <li>Esclarecimento de dúvidas finais</li>
-                                    <li>Anúncio do tema da próxima aula</li>
-                                </ul>
-                            </li>
-                        </ol>
+                        
+                        <!-- Controles de edição para admin -->
+                        <div class="admin-controls" id="roteiro-controls">
+                            <button class="btn btn-sm admin-edit-btn" id="edit-roteiro-btn"><i class="fas fa-pencil-alt"></i> Editar Roteiro</button>
+                            <button class="btn btn-sm admin-save-btn" id="save-roteiro-btn" disabled><i class="fas fa-save"></i> Salvar Alterações</button>
+                            <button class="btn btn-sm btn-secondary admin-cancel-btn" id="cancel-roteiro-btn" disabled><i class="fas fa-times"></i> Cancelar</button>
+                        </div>
+                        
+                        <!-- Conteúdo editável do roteiro -->
+                        <div id="roteiro-content">
+                            <ol>
+                                <li><strong>Introdução (10 minutos)</strong>
+                                    <ul>
+                                        <li>Apresentação dos participantes e instrutores</li>
+                                        <li>Breve explicação sobre a importância da inclusão digital</li>
+                                        <li>Verificação do conhecimento prévio dos participantes</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Conteúdo Principal (35 minutos)</strong>
+                                    <ul>
+                                        <li>Explicação dos conceitos básicos (5-10 min)</li>
+                                        <li>Demonstração prática (10-15 min)</li>
+                                        <li>Atividade guiada com os participantes (15-20 min)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Exercícios Práticos (10 minutos)</strong>
+                                    <ul>
+                                        <li>Aplicação dos conhecimentos em exercícios simples</li>
+                                        <li>Auxílio individualizado conforme necessário</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Encerramento (5 minutos)</strong>
+                                    <ul>
+                                        <li>Recapitulação do conteúdo aprendido</li>
+                                        <li>Esclarecimento de dúvidas finais</li>
+                                        <li>Anúncio do tema da próxima aula</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+                        
+                        <!-- Editor de texto para o roteiro (inicialmente oculto) -->
+                        <div id="roteiro-editor" class="hidden">
+                            <textarea id="roteiro-textarea" class="admin-textarea" rows="15"></textarea>
+                            <p class="editor-hint"><i class="fas fa-info-circle"></i> Use formatação HTML simples como &lt;strong&gt;, &lt;ul&gt; e &lt;li&gt; para estruturar o conteúdo.</p>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="accordion-item">
-                    <div class="accordion-header">Dicas para Facilitar o Aprendizado</div>
-                    <div class="accordion-content">
-                        <h3>Estratégias Pedagógicas</h3>
-                        <ul>
-                            <li><strong>Ambiente favorável:</strong> Garantir que a sala tenha iluminação adequada e que os equipamentos estejam funcionando corretamente.</li>
-                            <li><strong>Material de apoio:</strong> Disponibilizar materiais impressos com os principais conceitos e ilustrações.</li>
-                            <li><strong>Linguagem acessível:</strong> Evitar jargões técnicos e explicar termos desconhecidos.</li>
-                            <li><strong>Incentivo constante:</strong> Valorizar cada progresso, por menor que seja, para manter a motivação.</li>
-                            <li><strong>Ritmo individualizado:</strong> Respeitar o tempo de aprendizado de cada participante.</li>
-                            <li><strong>Associações com o cotidiano:</strong> Relacionar os novos conhecimentos com atividades já familiares aos participantes.</li>
-                        </ul>
-                    </div>
-                </div>
-                
+                <!-- Modificando Recursos Adicionais para permitir importação e download -->
                 <div class="accordion-item">
                     <div class="accordion-header">Recursos Adicionais</div>
                     <div class="accordion-content">
                         <h3>Materiais Complementares</h3>
+                        
                         <div class="resources-grid">
                             <div class="resource-card">
                                 <i class="fas fa-file-pdf"></i>
                                 <h4>Apostila Completa</h4>
                                 <p>Material didático com todo o conteúdo do curso em formato PDF.</p>
-                                <a href="#" class="btn btn-sm">Download</a>
+                                <div class="resource-actions">
+                                    <a href="#" class="btn btn-sm resource-download-btn"><i class="fas fa-download"></i> Download</a>
+                                    <label class="btn btn-sm resource-upload-btn">
+                                        <i class="fas fa-upload"></i> Importar
+                                        <input type="file" class="resource-file-input" accept=".pdf" data-resource="apostila" hidden>
+                                    </label>
+                                </div>
+                                <span class="resource-status" id="apostila-status"></span>
                             </div>
                             <div class="resource-card">
                                 <i class="fas fa-file-powerpoint"></i>
                                 <h4>Apresentações</h4>
                                 <p>Slides para utilizar durante as aulas.</p>
-                                <a href="#" class="btn btn-sm">Download</a>
+                                <div class="resource-actions">
+                                    <a href="#" class="btn btn-sm resource-download-btn"><i class="fas fa-download"></i> Download</a>
+                                    <label class="btn btn-sm resource-upload-btn">
+                                        <i class="fas fa-upload"></i> Importar
+                                        <input type="file" class="resource-file-input" accept=".ppt,.pptx" data-resource="apresentacao" hidden>
+                                    </label>
+                                </div>
+                                <span class="resource-status" id="apresentacao-status"></span>
                             </div>
                             <div class="resource-card">
                                 <i class="fas fa-file-alt"></i>
                                 <h4>Atividades Práticas</h4>
                                 <p>Exercícios extras para reforçar o aprendizado.</p>
-                                <a href="#" class="btn btn-sm">Download</a>
+                                <div class="resource-actions">
+                                    <a href="#" class="btn btn-sm resource-download-btn"><i class="fas fa-download"></i> Download</a>
+                                    <label class="btn btn-sm resource-upload-btn">
+                                        <i class="fas fa-upload"></i> Importar
+                                        <input type="file" class="resource-file-input" accept=".pdf,.doc,.docx" data-resource="atividades" hidden>
+                                    </label>
+                                </div>
+                                <span class="resource-status" id="atividades-status"></span>
                             </div>
                             <div class="resource-card">
                                 <i class="fas fa-video"></i>
                                 <h4>Videoaulas Complementares</h4>
                                 <p>Vídeos adicionais para aprofundar os temas.</p>
-                                <a href="#" class="btn btn-sm">Acessar</a>
+                                <div class="resource-actions">
+                                    <a href="#" class="btn btn-sm resource-download-btn"><i class="fas fa-external-link-alt"></i> Acessar</a>
+                                    <label class="btn btn-sm resource-upload-btn">
+                                        <i class="fas fa-link"></i> Adicionar Link
+                                        <input type="file" class="resource-file-input" accept="video/*" data-resource="videos" title="Selecionar arquivo de vídeo" hidden>
+                                    </label>
+                                </div>
+                                <span class="resource-status" id="videos-status"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Sistema para organizar os recursos -->
+                        <div class="resources-manager">
+                            <h4>Gerenciamento de Recursos</h4>
+                            <div class="resources-list">
+                                <div class="resources-list-header">
+                                    <span>Nome do Recurso</span>
+                                    <span>Tipo</span>
+                                    <span>Data de Adição</span>
+                                    <span>Ações</span>
+                                </div>
+                                <div id="resources-list-content">
+                                    <!-- Os recursos serão listados dinamicamente aqui -->
+                                    <div class="resource-list-empty">
+                                        <p>Nenhum recurso adicionado ainda.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
+                <!-- Melhorando a Ficha de Acompanhamento -->
                 <div class="accordion-item">
                     <div class="accordion-header">Avaliação do Aprendizado</div>
                     <div class="accordion-content">
@@ -1017,9 +1070,88 @@ if (numero % 2 === 0) {
                             <li><strong>Exercícios práticos:</strong> Propor tarefas simples que apliquem o conhecimento adquirido.</li>
                             <li><strong>Feedback construtivo:</strong> Fornecer retorno individualizado, destacando avanços e áreas para melhoria.</li>
                         </ul>
+                        
                         <div class="evaluation-form">
                             <h4>Ficha de Acompanhamento</h4>
-                            <a href="#" class="btn">Baixar modelo de ficha</a>
+                            
+                            <!-- Controles de edição para fichas de acompanhamento -->
+                            <div class="admin-controls" id="ficha-controls">
+                                <button class="btn" id="download-ficha-btn"><i class="fas fa-download"></i> Baixar modelo de ficha</button>
+                                <button class="btn" id="edit-ficha-btn"><i class="fas fa-pencil-alt"></i> Editar ficha</button>
+                                <button class="btn" id="save-ficha-btn" disabled><i class="fas fa-save"></i> Salvar alterações</button>
+                            </div>
+                            
+                            <!-- Editor de Ficha de Acompanhamento -->
+                            <div class="ficha-container">
+                                <div class="ficha-preview" id="ficha-preview">
+                                    <!-- Aqui será mostrado o modelo de ficha atual -->
+                                    <div class="ficha-preview-default">
+                                        <h3>Ficha de Acompanhamento - Inclusão Digital</h3>
+                                        <div class="ficha-campo">
+                                            <label>Nome do Participante:</label>
+                                            <div class="campo-linha"></div>
+                                        </div>
+                                        <div class="ficha-campo">
+                                            <label>Data:</label>
+                                            <div class="campo-linha"></div>
+                                        </div>
+                                        <div class="ficha-campo">
+                                            <label>Módulo:</label>
+                                            <div class="campo-linha"></div>
+                                        </div>
+                                        <div class="ficha-tabela">
+                                            <div class="tabela-header">
+                                                <div>Habilidade</div>
+                                                <div>Não Desenvolvida</div>
+                                                <div>Em Desenvolvimento</div>
+                                                <div>Desenvolvida</div>
+                                            </div>
+                                            <div class="tabela-linha">
+                                                <div>Uso do mouse</div>
+                                                <div class="checkbox"></div>
+                                                <div class="checkbox"></div>
+                                                <div class="checkbox"></div>
+                                            </div>
+                                            <div class="tabela-linha">
+                                                <div>Uso do teclado</div>
+                                                <div class="checkbox"></div>
+                                                <div class="checkbox"></div>
+                                                <div class="checkbox"></div>
+                                            </div>
+                                            <div class="tabela-linha">
+                                                <div>Navegação na internet</div>
+                                                <div class="checkbox"></div>
+                                                <div class="checkbox"></div>
+                                                <div class="checkbox"></div>
+                                            </div>
+                                            <div class="tabela-linha">
+                                                <div>Uso de e-mail</div>
+                                                <div class="checkbox"></div>
+                                                <div class="checkbox"></div>
+                                                <div class="checkbox"></div>
+                                            </div>
+                                        </div>
+                                        <div class="ficha-campo">
+                                            <label>Observações:</label>
+                                            <div class="campo-texto"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Interface para edição da ficha - inicialmente oculta -->
+                                <div class="ficha-editor hidden" id="ficha-editor">
+                                    <div class="ficha-sections">
+                                        <h4>Estrutura da Ficha</h4>
+                                        <div class="ficha-section-controls">
+                                            <button class="btn btn-sm" id="add-section-btn"><i class="fas fa-plus"></i> Adicionar Seção</button>
+                                            <button class="btn btn-sm" id="add-table-btn"><i class="fas fa-table"></i> Adicionar Tabela</button>
+                                        </div>
+                                        <div id="ficha-sections-container">
+                                            <!-- As seções editáveis serão adicionadas aqui -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1318,7 +1450,7 @@ if (numero % 2 === 0) {
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="https://www.uniateneu.edu.br/wp-content/uploads/2022/09/cropped-logo.png" alt="Logo UniAteneu" class="footer-logo-img">
+                <img src="images/logo-uniateneu.png" alt="Logo UniAteneu" class="footer-logo-img">
             </div>
             <div class="footer-info">
                 <p>Inclusão Digital e Programação Básica: Alfabetizando para o Mundo Digital</p>
