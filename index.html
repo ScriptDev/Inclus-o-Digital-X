@@ -16,15 +16,45 @@
         <p class="subtitle">Alfabetizando para o Mundo Digital</p>
     </header>
 
-    <nav>
-        <button class="nav-btn active" data-target="inicio">Início</button>
-        <button class="nav-btn" data-target="computador-basico">Computador Básico</button>
-        <button class="nav-btn" data-target="internet">Internet</button>
-        <button class="nav-btn" data-target="videos-tutoriais">Vídeos Tutoriais</button>
-        <button class="nav-btn" data-target="programacao">Programação</button>
-        <button class="nav-btn" data-target="exercicios">Exercícios</button>
-        <button class="nav-btn" data-target="glossario">Glossário</button>
-        <button class="nav-btn admin-only" data-target="plano-aula">Plano de Aula</button>
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <button class="nav-btn active" data-target="inicio">
+                <i class="fas fa-home"></i>
+                <span>Início</span>
+            </button>
+            <button class="nav-btn" data-target="computador-basico">
+                <i class="fas fa-desktop"></i>
+                <span>Computador Básico</span>
+            </button>
+            <button class="nav-btn" data-target="internet">
+                <i class="fas fa-globe"></i>
+                <span>Internet</span>
+            </button>
+            <button class="nav-btn" data-target="videos-tutoriais">
+                <i class="fas fa-video"></i>
+                <span>Vídeos Tutoriais</span>
+            </button>
+            <button class="nav-btn" data-target="programacao">
+                <i class="fas fa-code"></i>
+                <span>Programação</span>
+            </button>
+            <button class="nav-btn" data-target="exercicios">
+                <i class="fas fa-tasks"></i>
+                <span>Exercícios</span>
+            </button>
+            <button class="nav-btn" data-target="glossario">
+                <i class="fas fa-book"></i>
+                <span>Glossário</span>
+            </button>
+            <button class="nav-btn admin-only" data-target="plano-aula">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Plano de Aula</span>
+            </button>
+            <button class="nav-btn admin-only" data-target="admin-exercicios">
+                <i class="fas fa-cogs"></i>
+                <span>Gerenciar Exercícios</span>
+            </button>
+        </div>
     </nav>
 
     <main>
@@ -364,13 +394,13 @@
             
             <div class="browser-simulator">
                 <div class="browser-toolbar">
-                    <button class="browser-btn back"><i class="fas fa-arrow-left"></i></button>
-                    <button class="browser-btn forward"><i class="fas fa-arrow-right"></i></button>
-                    <button class="browser-btn refresh"><i class="fas fa-redo"></i></button>
+                    <button class="browser-btn back" title="Voltar"><i class="fas fa-arrow-left"></i></button>
+                    <button class="browser-btn forward" title="Avançar"><i class="fas fa-arrow-right"></i></button>
+                    <button class="browser-btn refresh" title="Atualizar"><i class="fas fa-redo"></i></button>
                     <div class="address-bar">
                         <span class="https-icon"><i class="fas fa-lock"></i></span>
-                        <input type="text" value="www.uniateneu.edu.br">
-                        <button class="go-btn"><i class="fas fa-arrow-right"></i></button>
+                        <input type="text" value="www.uniateneu.edu.br" title="Endereço do site" aria-label="Endereço do site">
+                        <button class="go-btn" title="Ir para o site"><i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
                 <div class="browser-content">
@@ -379,7 +409,7 @@
                     <p>A internet é uma rede global de computadores conectados.</p>
                     <div class="search-container">
                         <input type="text" placeholder="Pesquise algo...">
-                        <button class="search-btn"><i class="fas fa-search"></i></button>
+                        <button class="search-btn" title="Pesquisar"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
             </div>
@@ -599,11 +629,70 @@ if (numero % 2 === 0) {
             <div class="exercises-container">
                 <div class="exercise-card">
                     <h3>Exercício 1: Digitação</h3>
-                    <p>Digite o texto abaixo na caixa de digitação:</p>
-                    <div class="typing-text">O aprendizado digital é importante para todas as idades.</div>
-                    <textarea class="typing-input" placeholder="Digite aqui..."></textarea>
-                    <div class="exercise-feedback"></div>
-                    <button class="btn check-btn">Verificar</button>
+                    <p>Digite o texto abaixo na caixa de digitação para testar sua velocidade e precisão:</p>
+                    
+                    <div class="typing-challenge-container">
+                        <!-- Timer e Progresso -->
+                        <div class="typing-progress">
+                            <div class="typing-timer">
+                                <i class="fas fa-clock"></i> <span id="typing-timer-display">00:00.000</span>
+                            </div>
+                            <div class="typing-xp-progress">
+                                <div class="xp-progress-bar"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Texto para digitar (visível apenas após iniciar desafio) -->
+                        <div class="typing-text hidden" aria-label="Texto para digitar">O aprendizado digital é importante para todas as idades.</div>
+                        
+                        <!-- Texto informativo antes de iniciar -->
+                        <div class="typing-start-info">
+                            <p><i class="fas fa-trophy"></i> Desafie-se! Teste sua velocidade de digitação e entre no ranking!</p>
+                            <button class="btn typing-start-btn">Iniciar Desafio</button>
+                        </div>
+                        
+                        <!-- Campo para digitação (inicialmente oculto) -->
+                        <textarea class="typing-input hidden" placeholder="Digite aqui..." aria-label="Campo para digitar o texto" disabled></textarea>
+                        
+                        <!-- Feedback e botão de verificação -->
+                        <div class="exercise-feedback" role="alert"></div>
+                        <button class="btn check-btn" disabled>Verificar</button>
+                        
+                        <!-- Instruções e dicas -->
+                        <p class="typing-instruction" aria-live="polite">
+                            <i class="fas fa-info-circle" aria-hidden="true"></i>
+                            <span>Pratique suas habilidades digitando o texto <strong>manualmente</strong>. A função copiar e colar está <strong>desativada</strong> para melhorar seu aprendizado.</span>
+                        </p>
+                        <p class="typing-tip">
+                            <small><i class="fas fa-keyboard" aria-hidden="true"></i> Dica: Digite exatamente como está escrito, incluindo pontuação e espaços.</small>
+                        </p>
+                    </div>
+                    
+                    <!-- Modal de Registro de Pontuação (inicialmente oculto) -->
+                    <div class="typing-score-modal hidden">
+                        <div class="typing-score-content">
+                            <h4>Parabéns! Seu tempo: <span class="final-time">00:00.000</span></h4>
+                            <p>Registre sua pontuação para aparecer no ranking:</p>
+                            <div class="typing-score-form">
+                                <div class="form-group">
+                                    <label for="score-name">Seu nome:</label>
+                                    <input type="text" id="score-name" placeholder="Digite seu nome" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="score-birthday">Data de aniversário:</label>
+                                    <input type="date" id="score-birthday" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="score-email">Email:</label>
+                                    <input type="email" id="score-email" placeholder="seu@email.com" required>
+                                </div>
+                                <div class="typing-score-buttons">
+                                    <button class="btn" id="save-score-btn">Salvar</button>
+                                    <button class="btn btn-secondary" id="cancel-score-btn">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="exercise-card">
@@ -702,7 +791,7 @@ if (numero % 2 === 0) {
             
             <div class="search-glossary">
                 <input type="text" id="glossary-search" placeholder="Buscar termo...">
-                <button class="btn" id="search-glossary-btn"><i class="fas fa-search"></i></button>
+                <button class="btn" id="search-glossary-btn" title="Buscar no glossário"><i class="fas fa-search"></i></button>
             </div>
             
             <div class="glossary-container">
@@ -945,6 +1034,285 @@ if (numero % 2 === 0) {
                 </div>
             </div>
         </section>
+
+        <!-- Seção de Administração de Exercícios -->
+        <section id="admin-exercicios">
+            <h2>Gerenciamento de Exercícios</h2>
+            <p class="section-intro">Nesta área você pode criar, editar, ocultar ou remover exercícios para os usuários.</p>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="digitacao">Exercício de Digitação</button>
+                <button class="admin-tab-btn" data-tab="quiz">Quiz de Conhecimento</button>
+                <button class="admin-tab-btn" data-tab="arrastar">Arrastar e Soltar</button>
+                <button class="admin-tab-btn" data-tab="ranking">Ranking de Digitação</button>
+            </div>
+
+            <!-- Gerenciador de Exercício de Digitação -->
+            <div class="admin-tab-content active" id="digitacao-tab">
+                <div class="admin-section-header">
+                    <h3>Gerenciar Exercício de Digitação</h3>
+                    <p>Você pode modificar a frase que os usuários devem digitar.</p>
+                </div>
+
+                <div class="admin-form">
+                    <div class="form-group">
+                        <label for="digitacao-frase">Frase para Digitação:</label>
+                        <textarea id="digitacao-frase" class="admin-textarea">O aprendizado digital é importante para todas as idades.</textarea>
+                    </div>
+                    <div class="admin-buttons">
+                        <button class="btn" id="salvar-digitacao">Salvar Alterações</button>
+                        <button class="btn btn-secondary" id="restaurar-digitacao">Restaurar Original</button>
+                    </div>
+                    <div class="admin-feedback" id="digitacao-feedback"></div>
+                </div>
+            </div>
+
+            <!-- Gerenciador de Quiz -->
+            <div class="admin-tab-content" id="quiz-tab">
+                <div class="admin-section-header">
+                    <h3>Gerenciar Quiz de Conhecimento</h3>
+                    <p>Gerencie as perguntas existentes ou adicione novas.</p>
+                </div>
+
+                <div class="admin-quiz-container">
+                    <div class="admin-quiz-list">
+                        <h4>Perguntas Existentes</h4>
+                        <div class="admin-list-group">
+                            <div class="admin-list-item admin-readonly">
+                                <div class="admin-item-header">
+                                    <span>Pergunta 1: Qual destes é um dispositivo de entrada?</span>
+                                    <div class="admin-item-actions">
+                                        <span class="admin-badge">Original</span>
+                                        <button class="admin-action-btn view-btn" title="Visualizar"><i class="fas fa-eye"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="admin-list-item admin-readonly">
+                                <div class="admin-item-header">
+                                    <span>Pergunta 2: Qual dos seguintes é um sistema operacional?</span>
+                                    <div class="admin-item-actions">
+                                        <span class="admin-badge">Original</span>
+                                        <button class="admin-action-btn view-btn" title="Visualizar"><i class="fas fa-eye"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="admin-list-item admin-readonly">
+                                <div class="admin-item-header">
+                                    <span>Pergunta 3: Para que serve o botão "X" no canto superior direito de uma janela?</span>
+                                    <div class="admin-item-actions">
+                                        <span class="admin-badge">Original</span>
+                                        <button class="admin-action-btn view-btn" title="Visualizar"><i class="fas fa-eye"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="admin-list-item admin-readonly">
+                                <div class="admin-item-header">
+                                    <span>Pergunta 4: O que é Wi-Fi?</span>
+                                    <div class="admin-item-actions">
+                                        <span class="admin-badge">Original</span>
+                                        <button class="admin-action-btn view-btn" title="Visualizar"><i class="fas fa-eye"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Aqui serão listadas as perguntas criadas pelo admin (via JavaScript) -->
+                        </div>
+                    </div>
+
+                    <div class="admin-divider"></div>
+
+                    <div class="admin-quiz-editor">
+                        <h4>Adicionar Nova Pergunta</h4>
+                        <div class="form-group">
+                            <label for="quiz-pergunta">Pergunta:</label>
+                            <input type="text" id="quiz-pergunta" placeholder="Digite a pergunta..." class="admin-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Opções:</label>
+                            <div class="admin-option">
+                                <input type="text" class="quiz-opcao" placeholder="Opção A">
+                                <label class="radio-label">
+                                    <input type="radio" name="resposta-correta" value="0">
+                                    <span class="radio-custom"></span>
+                                    Correta
+                                </label>
+                            </div>
+                            <div class="admin-option">
+                                <input type="text" class="quiz-opcao" placeholder="Opção B">
+                                <label class="radio-label">
+                                    <input type="radio" name="resposta-correta" value="1">
+                                    <span class="radio-custom"></span>
+                                    Correta
+                                </label>
+                            </div>
+                            <div class="admin-option">
+                                <input type="text" class="quiz-opcao" placeholder="Opção C">
+                                <label class="radio-label">
+                                    <input type="radio" name="resposta-correta" value="2">
+                                    <span class="radio-custom"></span>
+                                    Correta
+                                </label>
+                            </div>
+                            <div class="admin-option">
+                                <input type="text" class="quiz-opcao" placeholder="Opção D">
+                                <label class="radio-label">
+                                    <input type="radio" name="resposta-correta" value="3">
+                                    <span class="radio-custom"></span>
+                                    Correta
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="quiz-visivel">Visibilidade:</label>
+                            <label class="switch">
+                                <input type="checkbox" id="quiz-visivel">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="switch-label">Visível para usuários</span>
+                        </div>
+                        
+                        <div class="admin-buttons">
+                            <button class="btn" id="salvar-quiz">Adicionar Pergunta</button>
+                            <button class="btn btn-secondary" id="limpar-quiz">Limpar Campos</button>
+                        </div>
+                        <div class="admin-feedback" id="quiz-feedback"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gerenciador de Arrastar e Soltar -->
+            <div class="admin-tab-content" id="arrastar-tab">
+                <div class="admin-section-header">
+                    <h3>Gerenciar Exercício de Arrastar e Soltar</h3>
+                    <p>Adicione novos itens para o exercício de classificação Hardware/Software.</p>
+                </div>
+
+                <div class="admin-drag-container">
+                    <div class="admin-drag-preview">
+                        <h4>Visualização do Exercício</h4>
+                        <div class="drag-zones preview-zones">
+                            <div class="drop-zone" data-type="hardware">
+                                <h4>Hardware</h4>
+                                <p>(Componentes físicos)</p>
+                                <div class="preview-items hardware-items">
+                                    <div class="drag-item preview-item">Mouse</div>
+                                    <div class="drag-item preview-item">Teclado</div>
+                                    <div class="drag-item preview-item">Monitor</div>
+                                    <!-- Itens adicionados dinamicamente -->
+                                </div>
+                            </div>
+                            <div class="drop-zone" data-type="software">
+                                <h4>Software</h4>
+                                <p>(Programas)</p>
+                                <div class="preview-items software-items">
+                                    <div class="drag-item preview-item">Word</div>
+                                    <div class="drag-item preview-item">Chrome</div>
+                                    <div class="drag-item preview-item">Excel</div>
+                                    <!-- Itens adicionados dinamicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-divider"></div>
+
+                    <div class="admin-drag-editor">
+                        <h4>Adicionar Novo Item</h4>
+                        <div class="form-group">
+                            <label for="drag-nome">Nome do Item:</label>
+                            <input type="text" id="drag-nome" placeholder="Digite o nome do item..." class="admin-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Tipo:</label>
+                            <div class="admin-radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="drag-tipo" value="hardware" checked>
+                                    <span class="radio-custom"></span>
+                                    Hardware
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="drag-tipo" value="software">
+                                    <span class="radio-custom"></span>
+                                    Software
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="drag-visivel">Visibilidade:</label>
+                            <label class="switch">
+                                <input type="checkbox" id="drag-visivel">
+                                <span class="slider round"></span>
+                            </label>
+                            <span class="switch-label">Visível para usuários</span>
+                        </div>
+                        
+                        <div class="admin-buttons">
+                            <button class="btn" id="salvar-drag">Adicionar Item</button>
+                            <button class="btn btn-secondary" id="limpar-drag">Limpar Campos</button>
+                        </div>
+                        
+                        <div class="admin-feedback" id="drag-feedback"></div>
+                    </div>
+
+                    <div class="admin-divider"></div>
+
+                    <div class="admin-drag-list">
+                        <h4>Seus Itens Adicionados</h4>
+                        <div class="admin-list-group" id="admin-drag-items-list">
+                            <!-- Itens adicionados pelo admin serão listados aqui via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ranking de Digitação -->
+            <div class="admin-tab-content" id="ranking-tab">
+                <div class="admin-section-header">
+                    <h3>Ranking do Desafio de Digitação</h3>
+                    <p>Veja os melhores tempos registrados pelos usuários.</p>
+                </div>
+
+                <div class="admin-ranking-container">
+                    <div class="admin-ranking-controls">
+                        <div class="admin-search">
+                            <input type="text" id="ranking-search" placeholder="Buscar por nome ou email..." class="admin-input">
+                            <button class="btn" id="search-ranking-btn" title="Buscar"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="admin-buttons">
+                            <button class="btn" id="export-ranking-btn"><i class="fas fa-file-export"></i> Exportar Ranking</button>
+                            <button class="btn btn-secondary" id="clear-ranking-btn"><i class="fas fa-trash-alt"></i> Limpar Ranking</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-ranking-table-container">
+                        <table class="admin-ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Data de Aniversário</th>
+                                    <th>Tempo</th>
+                                    <th>Data do Registro</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-table-body">
+                                <!-- Os registros serão adicionados via JavaScript -->
+                                <tr class="no-records">
+                                    <td colspan="7">Nenhum registro encontrado.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="admin-feedback" id="ranking-feedback"></div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -955,7 +1323,7 @@ if (numero % 2 === 0) {
             <div class="footer-info">
                 <p>Inclusão Digital e Programação Básica: Alfabetizando para o Mundo Digital</p>
                 <p>Desenvolvido por alunos da UniAteneu</p>
-                <p>&copy; 2023 UniAteneu. Todos os direitos reservados.</p>
+                <p>&copy; 2025 UniAteneu. Todos os direitos reservados.</p>
             </div>
             <div class="footer-contact">
                 <h3>Contato</h3>
@@ -1024,12 +1392,9 @@ if (numero % 2 === 0) {
                 <p>Para acessar a área administrativa, você pode usar um dos seguintes métodos:</p>
                 <ol>
                     <li>Pressione <strong>Ctrl + \</strong> no teclado</li>
-                    <li>Digite <strong>admin</strong> no teclado</li>
                     <li>Clique no ícone de <strong>chave</strong> localizado na seção de contato no rodapé da página</li>
                 </ol>
-                <p>Após acessar, utilize as credenciais:</p>
-                <p>Email: <strong>admin@digitalx.com</strong><br>
-                Senha: <strong>adminx1515</strong></p>
+                <p>Em seguida, digite a senha de administrador para obter acesso.</p>
             </div>
         </div>
     </div>
