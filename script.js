@@ -1,5 +1,8 @@
 // Esperar que o DOM seja completamente carregado
 document.addEventListener('DOMContentLoaded', function () {
+    // Constantes para o sistema de digitação
+    const FRASE_PADRAO_DIGITACAO = 'O aprendizado digital é importante para todas as idades.';
+    
     // Inicializar variáveis globais
     window.draggedItem = null;
     window.dropZonesInitialized = false;
@@ -6257,24 +6260,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Inicializar o quiz
     initQuiz();
 
-    // Constantes para o sistema de digitação
-    const FRASE_PADRAO_DIGITACAO = 'O aprendizado digital é importante para todas as idades.';
-    
-    // Inicializar os textos para digitação com a frase padrão ou personalizada
-    document.addEventListener('DOMContentLoaded', function() {
-        const typingTexts = document.querySelectorAll('.typing-text');
-        typingTexts.forEach(text => {
-            // Verificar se existe frase personalizada pelo admin
-            const frasePersonalizada = localStorage.getItem('admin_digitacao_frase');
-            
-            if (frasePersonalizada && frasePersonalizada.trim() !== '') {
-                text.textContent = frasePersonalizada;
-                console.log('[Diagnóstico] Texto de digitação inicializado com frase personalizada do admin');
-            } else {
-                // Usar a frase padrão se não houver personalização
-                text.textContent = FRASE_PADRAO_DIGITACAO;
-                console.log('[Diagnóstico] Texto de digitação inicializado com frase padrão');
-            }
-        });
+    // Inicializar os textos para digitação logo no início
+    console.log('[Diagnóstico] Inicializando textos de digitação...');
+    typingTexts.forEach(text => {
+        // Verificar se existe frase personalizada pelo admin
+        const frasePersonalizada = localStorage.getItem('admin_digitacao_frase');
+        
+        if (frasePersonalizada && frasePersonalizada.trim() !== '') {
+            text.textContent = frasePersonalizada;
+            console.log('[Diagnóstico] Texto de digitação inicializado com frase personalizada do admin');
+        } else {
+            // Usar a frase padrão se não houver personalização
+            text.textContent = FRASE_PADRAO_DIGITACAO;
+            console.log('[Diagnóstico] Texto de digitação inicializado com frase padrão');
+        }
     });
 });
