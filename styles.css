@@ -3716,3 +3716,122 @@ input:checked + .slider:before {
     color: #c62828;
     background-color: rgba(244, 67, 54, 0.2);
 }
+
+/* Estilos para o quiz score */
+.quiz-score {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.quiz-score.high-score {
+    color: #2ecc71;
+    background-color: rgba(46, 204, 113, 0.1);
+    border: 2px solid #2ecc71;
+}
+
+.quiz-score.medium-score {
+    color: #f39c12;
+    background-color: rgba(243, 156, 18, 0.1);
+    border: 2px solid #f39c12;
+}
+
+.quiz-score.low-score {
+    color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.1);
+    border: 2px solid #e74c3c;
+}
+
+/* Estilos para os itens de resultado */
+.result-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-start;
+}
+
+.result-item.correct {
+    background-color: rgba(46, 204, 113, 0.1);
+    border-left: 4px solid #2ecc71;
+}
+
+.result-item.incorrect {
+    background-color: rgba(231, 76, 60, 0.1);
+    border-left: 4px solid #e74c3c;
+}
+
+.result-icon {
+    margin-right: 1rem;
+    font-size: 1.5rem;
+}
+
+.result-item.correct .result-icon {
+    color: #2ecc71;
+}
+
+.result-item.incorrect .result-icon {
+    color: #e74c3c;
+}
+
+.result-text {
+    flex: 1;
+}
+
+.result-text p {
+    margin: 0.5rem 0;
+}
+
+.result-text strong {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Estilos para comparação de texto do exercício de digitação */
+.text-comparison {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    font-family: monospace;
+    line-height: 1.5;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.text-comparison p {
+    margin: 8px 0;
+}
+
+.text-comparison .correct-char {
+    color: #28a745;
+}
+
+.text-comparison .highlight-char {
+    background-color: #ffc107;
+    color: #000;
+    font-weight: bold;
+    padding: 2px 0;
+    border-radius: 3px;
+}
+
+.text-comparison .error-char {
+    background-color: #dc3545;
+    color: white;
+    font-weight: bold;
+    padding: 2px 0;
+    border-radius: 3px;
+}
+
+/* Tamanho maior para o feedback do exercício de digitação */
+.typing-challenge-container .exercise-feedback {
+    max-height: none;
+    overflow: visible;
+    padding: 15px;
+    margin-top: 15px;
+    font-size: 14px;
+}
