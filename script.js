@@ -788,6 +788,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const checkBtn = document.querySelector('.check-btn');
 
             if (startInfo && typingText && typingInput) {
+                // Verificar se existe frase personalizada pelo admin no localStorage
+                const frasePersonalizada = localStorage.getItem('admin_digitacao_frase');
+                
+                // Atualizar o texto para digitação se existir uma frase personalizada
+                if (frasePersonalizada && frasePersonalizada.trim() !== '') {
+                    typingText.textContent = frasePersonalizada;
+                    console.log('[Diagnóstico] Usando frase personalizada pelo admin: ' + frasePersonalizada);
+                } else {
+                    // Caso contrário, usar a frase padrão
+                    if (typingText.textContent.trim() !== FRASE_PADRAO_DIGITACAO) {
+                        typingText.textContent = FRASE_PADRAO_DIGITACAO;
+                        console.log('[Diagnóstico] Usando frase padrão do sistema');
+                    }
+                }
+
                 // Esconder informações iniciais
                 startInfo.classList.add('hidden');
 
@@ -819,7 +834,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Focar no campo de digitação
                 typingInput.focus();
 
-                console.log('Desafio de digitação iniciado');
+                console.log('[Diagnóstico] Desafio de digitação iniciado');
                 showNotification('Desafio iniciado!', 'Comece a digitar o texto agora. O tempo está correndo!', 'info');
             }
         });
@@ -915,8 +930,9 @@ document.addEventListener('DOMContentLoaded', function () {
             activityState.keyPressCount++;
 
             // Se o usuário pressionar mais de 5 teclas, consideramos que houve atividade de digitação
-            if (activityState.keyPressCount > 5) {
+            if (activityState.keyPressCount > 3) {
                 activityState.detected = true;
+                console.log('[Diagnóstico] Atividade de digitação detectada');
             }
         });
 
@@ -939,6 +955,16 @@ document.addEventListener('DOMContentLoaded', function () {
         input.addEventListener('input', function (e) {
             const closestTypingText = this.closest('.typing-challenge-container').querySelector('.typing-text');
             updateProgressBar(this, closestTypingText);
+            
+            // Habilitar o botão de verificação se houver texto digitado
+            const container = this.closest('.typing-challenge-container') || this.closest('.exercise-card');
+            if (container) {
+                const checkBtn = container.querySelector('.check-btn');
+                if (checkBtn && this.value.trim().length > 0) {
+                    checkBtn.disabled = false;
+                    console.log('[Diagnóstico] Botão de verificação habilitado');
+                }
+            }
         });
 
         // Detecção de velocidade de digitação suspeita usando média móvel
@@ -1179,10 +1205,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const inputId = closestTypingInput.getAttribute('data-typing-id');
                 const activityState = window.typingActivity && window.typingActivity[inputId];
 
-                if (activityState && !activityState.detected && typedText.length > 10) {
-                    closestFeedback.textContent = 'Parece que este texto não foi digitado naturalmente. Por favor, pratique digitando manualmente.';
-                    closestFeedback.className = 'exercise-feedback feedback-error';
-                    return;
+                // Verificação mais tolerante para evitar falsos positivos
+                if (activityState && !activityState.detected && typedText.length > 15 && typedText.length > expectedText.length * 0.8) {
+                    console.log('[Diagnóstico] Possível texto não digitado naturalmente, mas validando assim mesmo');
+                    // Em vez de bloquear, vamos apenas registrar o evento mas permitir a verificação
+                    activityState.detected = true;  // Marcamos como detectado para evitar bloqueios futuros
                 }
 
                 if (typedText === '') {
@@ -1215,18 +1242,46 @@ document.addEventListener('DOMContentLoaded', function () {
                     setTimeout(() => {
                         showScoreModal(finalTime);
                     }, 1500);
-
                 } else {
-                    closestFeedback.textContent = 'O texto digitado não corresponde ao esperado. Tente novamente!';
-                    closestFeedback.className = 'exercise-feedback feedback-error';
-
-                    // Dicas construtivas para erros comuns
+                    // Calcular a similaridade entre o texto digitado e o esperado
                     const similarityPercent = calculateTextSimilarity(typedText, expectedText);
-                    if (similarityPercent > 80) {
-                        closestFeedback.textContent += ' Você está quase lá! Verifique a pontuação e ortografia.';
-                    }
+                    console.log(`[Diagnóstico] Similaridade: ${similarityPercent}%`);
+                    
+                    // Considerar textos muito similares como corretos
+                    if (similarityPercent >= 95) {
+                        closestFeedback.textContent = 'Parabéns! Seu texto está correto.';
+                        closestFeedback.className = 'exercise-feedback feedback-success';
+                        
+                        // Mostrar o tempo final
+                        const finalTime = currentUserTime;
+                        closestFeedback.textContent += ` Seu tempo: ${formatTime(finalTime)}`;
 
-                    // Reiniciar o timer (continuar contando)
+                        // Feedback adicional com emoji
+                        showNotification('Muito bem! 👏', `Você completou o desafio em ${formatTime(finalTime)}`, 'success');
+
+                        // Mostrar modal para registrar pontuação
+                        setTimeout(() => {
+                            showScoreModal(finalTime);
+                        }, 1500);
+                        return;
+                    }
+                    
+                    // Destacar onde o usuário errou no texto
+                    const comparisonHTML = compareTexts(expectedText, typedText);
+                    
+                    // Fornecer feedback com base na similaridade
+                    if (similarityPercent >= 90) {
+                        closestFeedback.innerHTML = 'Você está muito próximo! Verifique as diferenças abaixo:<br>' + comparisonHTML;
+                        closestFeedback.className = 'exercise-feedback feedback-error';
+                    } else if (similarityPercent >= 70) {
+                        closestFeedback.innerHTML = 'Você está no caminho certo! Observe as diferenças:<br>' + comparisonHTML;
+                        closestFeedback.className = 'exercise-feedback feedback-error';
+                    } else {
+                        closestFeedback.innerHTML = 'O texto digitado não corresponde ao esperado. Veja as diferenças:<br>' + comparisonHTML;
+                        closestFeedback.className = 'exercise-feedback feedback-error';
+                    }
+                    
+                    // Reiniciar o timer para permitir nova tentativa
                     startTime = Date.now() - currentUserTime;
                     typingInProgress = true;
                     typingTimer = setInterval(function () {
@@ -1237,6 +1292,67 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     }, 10);
                 }
+            }
+        });
+    });
+
+    // Função para comparar textos e destacar diferenças
+    function compareTexts(expectedText, typedText) {
+        const expectedChars = expectedText.split('');
+        const typedChars = typedText.split('');
+        
+        // Resultado da comparação
+        let result = '<div class="text-comparison">';
+        result += '<p><strong>Texto esperado:</strong></p><p>';
+        
+        // Comparar caractere por caractere
+        for (let i = 0; i < expectedChars.length; i++) {
+            if (i < typedChars.length && expectedChars[i] === typedChars[i]) {
+                // Caractere correto
+                result += `<span class="correct-char">${escapeHTML(expectedChars[i])}</span>`;
+            } else {
+                // Caractere esperado ausente ou incorreto
+                result += `<span class="highlight-char">${escapeHTML(expectedChars[i])}</span>`;
+            }
+        }
+        
+        result += '</p><p><strong>Seu texto:</strong></p><p>';
+        
+        // Destacar o texto do usuário
+        for (let i = 0; i < typedChars.length; i++) {
+            if (i < expectedChars.length && typedChars[i] === expectedChars[i]) {
+                // Caractere correto
+                result += `<span class="correct-char">${escapeHTML(typedChars[i])}</span>`;
+            } else {
+                // Caractere incorreto ou extra
+                result += `<span class="error-char">${escapeHTML(typedChars[i])}</span>`;
+            }
+        }
+        
+        result += '</p></div>';
+        return result;
+    }
+    
+    // Função auxiliar para escapar caracteres especiais HTML
+    function escapeHTML(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;")
+            .replace(/ /g, "&nbsp;"); // Preservar espaços
+    }
+
+    // Habilitar o botão de verificação quando o usuário estiver digitando
+    typingInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const container = this.closest('.typing-challenge-container') || this.closest('.exercise-card');
+            if (!container) return;
+            
+            const checkBtn = container.querySelector('.check-btn');
+            if (checkBtn && this.value.trim() !== '') {
+                checkBtn.disabled = false;
             }
         });
     });
@@ -1407,6 +1523,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 novaOpcao.addEventListener('change', function () {
                     // Obter o container da pergunta atual
                     const perguntaContainer = this.closest('.quiz-question');
+                    
+                    // Obter o número da pergunta atual
+                    const perguntaNum = perguntaContainer.getAttribute('data-question');
+                    
+                    // Armazenar a resposta no objeto userAnswers
+                    userAnswers[perguntaNum] = this.value;
+                    console.log(`[Diagnóstico] Opção selecionada para pergunta ${perguntaNum}: ${this.value}`);
+                    
+                    // Registrar se a resposta está correta
+                    const isCorrect = this.value === correctAnswers[perguntaNum];
+                    console.log(`[Diagnóstico] Resposta ${isCorrect ? 'correta' : 'incorreta'}`);
 
                     // Remover classe 'selected' de todas as opções desta pergunta
                     const opcoesGrupo = perguntaContainer.querySelectorAll('.quiz-option');
@@ -1437,11 +1564,13 @@ document.addEventListener('DOMContentLoaded', function () {
             "1": "c", // Teclado
             "2": "b", // Windows
             "3": "c", // Fechar a janela
-            "4": "d", // Tecnologia de conexão sem fio
+            "4": "b", // Armazenar temporariamente dados e programas em uso
             "5": "b", // Modos de chegar ou fazer algo mais rápido no computador
             "6": "d", // Cópia e cola determinada frase ou imagem
             "7": "a", // Navega entre campos do computador
-            "8": "b"  // São os componentes físicos do computador
+            "8": "b", // São os componentes físicos do computador
+            "9": "b", // Tentativa de obter informações pessoais através de e-mails ou sites falsos
+            "10": "b" // Que o site utiliza conexão segura e criptografada
         };
 
         // Texto explicativo para cada resposta
@@ -1449,11 +1578,13 @@ document.addEventListener('DOMContentLoaded', function () {
             "1": "O teclado é um dispositivo de entrada que permite inserir dados no computador.",
             "2": "Windows é um sistema operacional desenvolvido pela Microsoft.",
             "3": "O botão X no canto superior direito tem a função de fechar a janela atual.",
-            "4": "Wi-Fi é uma tecnologia que permite a conexão sem fio (wireless) de dispositivos à internet.",
+            "4": "A memória RAM (Random Access Memory) armazena temporariamente dados e programas que estão sendo utilizados pelo computador, permitindo acesso rápido pelo processador.",
             "5": "Atalhos são formas rápidas de realizar ações no computador, economizando tempo e cliques.",
             "6": "Ctrl+C copia um item e Ctrl+V cola o item copiado em outro local.",
             "7": "A tecla TAB permite navegar entre campos em formulários e outros elementos na tela.",
-            "8": "Hardware refere-se aos componentes físicos do computador, aquilo que pode ser tocado."
+            "8": "Hardware refere-se aos componentes físicos do computador, aquilo que pode ser tocado.",
+            "9": "Phishing é uma técnica de fraude online onde criminosos tentam obter suas informações sensíveis (senhas, dados bancários) através de e-mails, mensagens ou sites falsos que imitam serviços legítimos.",
+            "10": "O 'https://' e o ícone de cadeado indicam que a conexão entre seu navegador e o site está criptografada, tornando mais seguro o envio de informações sensíveis."
         };
 
         // Criar cópias globais para acesso de outras funções
@@ -1649,10 +1780,17 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             console.log(`[Diagnóstico] Opção selecionada: ${selectedOption}`);
+            
+            // Armazenar a resposta do usuário
+            userAnswers[currentQuestion] = selectedOption;
+            console.log(`[Diagnóstico] Resposta armazenada para pergunta ${currentQuestion}: ${selectedOption}`);
 
             // Verificar se a resposta está correta
             const isCorrect = selectedOption === correctAnswers[currentQuestion];
             console.log(`[Diagnóstico] Resposta ${isCorrect ? 'correta' : 'incorreta'}`);
+
+            // Adicionar classe 'answered' à pergunta atual
+            currentQuestionElement.classList.add('answered');
 
             // Destacar opções e mostrar feedback
             options.forEach(option => {
@@ -1717,7 +1855,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function showResults() {
             console.log('[Diagnóstico] Exibindo resultados do quiz');
 
-            // Calcular pontuação
+            // Recalcular pontuação - importante para garantir contagem correta
             let correctCount = 0;
             let resultsHTML = '';
 
@@ -1725,29 +1863,52 @@ document.addEventListener('DOMContentLoaded', function () {
             const totalQuestionsVisiveis = quizExercise.querySelectorAll('.quiz-question').length;
             console.log(`[Diagnóstico] Total de perguntas para resultados: ${totalQuestionsVisiveis}`);
 
-            for (let i = 1; i <= totalQuestionsVisiveis; i++) {
-                const userAnswer = userAnswers[i] || null;
+            // Log para depuração de respostas do usuário
+            console.log('[Diagnóstico] Respostas do usuário:', userAnswers);
+            console.log('[Diagnóstico] Respostas corretas:', correctAnswers);
 
-                // Verificar se temos a resposta para esta pergunta
-                if (!correctAnswers[i] && window.quizCorrectAnswers && window.quizCorrectAnswers[i]) {
-                    correctAnswers[i] = window.quizCorrectAnswers[i];
+            // Verificar cada pergunta
+            for (let i = 1; i <= totalQuestionsVisiveis; i++) {
+                const perguntaElement = quizExercise.querySelector(`.quiz-question[data-question="${i}"]`);
+                if (!perguntaElement) {
+                    console.error(`[Diagnóstico] Pergunta ${i} não encontrada!`);
+                    continue;
                 }
 
-                const isCorrect = userAnswer === correctAnswers[i];
+                // Verificar se a pergunta foi respondida
+                let userAnswer = userAnswers[i] || null;
+                let isCorrect = false;
 
-                if (isCorrect) correctCount++;
+                // Método 1: Verificar pelo userAnswers
+                if (userAnswer) {
+                    isCorrect = userAnswer === correctAnswers[i];
+                } 
+                // Método 2: Verificar pela classe 'correct' na opção selecionada
+                else {
+                    const selectedOption = perguntaElement.querySelector('.quiz-option.selected');
+                    if (selectedOption && selectedOption.classList.contains('correct')) {
+                        isCorrect = true;
+                        // Retroalimentar userAnswers
+                        const radioInput = selectedOption.querySelector('input[type="radio"]');
+                        if (radioInput) {
+                            userAnswer = radioInput.value;
+                            userAnswers[i] = userAnswer;
+                        }
+                    }
+                }
+
+                if (isCorrect) {
+                    correctCount++;
+                    console.log(`[Diagnóstico] Pergunta ${i}: Resposta correta`);
+                } else {
+                    console.log(`[Diagnóstico] Pergunta ${i}: Resposta incorreta ou não respondida`);
+                }
 
                 // Obter o texto da pergunta
-                const perguntaElement = quizExercise.querySelector(`.quiz-question[data-question="${i}"]`);
                 let textoPergunta = '';
-
-                if (perguntaElement) {
-                    const textElement = perguntaElement.querySelector('p');
-                    if (textElement) {
-                        textoPergunta = textElement.textContent;
-                    } else {
-                        textoPergunta = `Pergunta ${i}`;
-                    }
+                const textElement = perguntaElement.querySelector('p');
+                if (textElement) {
+                    textoPergunta = textElement.textContent;
                 } else {
                     textoPergunta = `Pergunta ${i}`;
                 }
@@ -1773,9 +1934,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 `;
             }
 
+            // Calcular porcentagem
+            const scorePercentage = Math.round((correctCount / totalQuestionsVisiveis) * 100);
+            console.log(`[Diagnóstico] Pontuação final: ${correctCount}/${totalQuestionsVisiveis} (${scorePercentage}%)`);
+
             // Atualizar pontuação e detalhes
-            quizScore.textContent = `${correctCount}/${totalQuestionsVisiveis}`;
+            quizScore.textContent = `${correctCount}/${totalQuestionsVisiveis} (${scorePercentage}%)`;
             resultDetails.innerHTML = resultsHTML;
+
+            // Adicionar classe baseada na porcentagem
+            quizScore.className = 'quiz-score';
+            if (scorePercentage >= 80) {
+                quizScore.classList.add('high-score');
+            } else if (scorePercentage >= 50) {
+                quizScore.classList.add('medium-score');
+            } else {
+                quizScore.classList.add('low-score');
+            }
 
             // Esconder as perguntas e mostrar os resultados
             quizExercise.querySelector('.quiz-questions').style.display = 'none';
@@ -1787,9 +1962,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Função para reiniciar o quiz
         function resetQuiz() {
+            console.log('[Diagnóstico] Reiniciando quiz...');
+            
+            // Redefinir o contador da pergunta atual
             currentQuestion = 1;
-            userAnswers = {};
-            correctAnswers = 0;
+            
+            // Limpar as respostas do usuário
+            for (let key in userAnswers) {
+                delete userAnswers[key];
+            }
+            console.log('[Diagnóstico] Respostas do usuário resetadas:', userAnswers);
             
             // Resetar todas as perguntas
             quizQuestions.forEach(question => {
@@ -1802,9 +1984,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 // Resetar as opções do tipo radio
                 question.querySelectorAll('.quiz-option').forEach(option => {
-                    option.classList.remove('correct', 'incorrect');
+                    option.classList.remove('selected', 'correct', 'incorrect');
                     const radio = option.querySelector('input[type="radio"]');
-                    if (radio) radio.checked = false;
+                    if (radio) {
+                        radio.checked = false;
+                        radio.disabled = false; // Habilitar novamente os botões de rádio
+                    }
                 });
 
                 // Remover explicações
@@ -1817,12 +2002,14 @@ document.addEventListener('DOMContentLoaded', function () {
             if (quizFeedback) {
                 quizFeedback.textContent = "";
                 quizFeedback.className = "quiz-feedback";
+                quizFeedback.style.display = 'none';
             }
             
             // Resetar o botão verificar
             if (checkBtn) {
                 checkBtn.textContent = "Verificar";
                 checkBtn.disabled = true;
+                checkBtn.classList.remove('verified');
                 checkBtn.style.display = 'block';
             }
             
@@ -1831,9 +2018,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 quizResults.style.display = 'none';
             }
             
+            // Mostrar perguntas
+            if (quizExercise.querySelector('.quiz-questions')) {
+                quizExercise.querySelector('.quiz-questions').style.display = 'block';
+            }
+            
+            // Mostrar navegação
+            if (quizExercise.querySelector('.quiz-navigation')) {
+                quizExercise.querySelector('.quiz-navigation').style.display = 'flex';
+            }
+            
+            // Mostrar indicador de progresso
+            if (quizExercise.querySelector('.quiz-progress-indicator')) {
+                quizExercise.querySelector('.quiz-progress-indicator').style.display = 'flex';
+            }
+            
             // Resetar barra de progresso
             if (progressBar) {
                 progressBar.style.width = '0%';
+                progressBar.style.setProperty('--progress', '0%');
             }
             
             // Resetar contador de perguntas
@@ -1842,7 +2045,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             
             // Mostrar a primeira pergunta
-            showQuestion(currentQuestion);
+            showQuestion(1);
+            console.log('[Diagnóstico] Quiz reiniciado com sucesso');
         }
 
         // Adicionar efeito visual nas opções ao serem selecionadas
@@ -1881,6 +2085,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (currentQuestion < totalQuestionsVisiveis) {
                     showQuestion(currentQuestion + 1);
                 } else {
+                    // Verificar novamente as respostas antes de mostrar os resultados
+                    let correctCount = 0;
+                    for (let i = 1; i <= totalQuestionsVisiveis; i++) {
+                        if (userAnswers[i] === correctAnswers[i]) {
+                            correctCount++;
+                        }
+                    }
+                    console.log(`[Diagnóstico] Total de respostas corretas antes de mostrar resultados: ${correctCount}`);
+                    
                     showResults();
                 }
             } else {
@@ -1927,6 +2140,19 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => {
             showQuestion(1);
         }, 100);
+        
+        // Garantir que o botão de reinício sempre tenha o event listener correto
+        if (restartBtn) {
+            // Remover event listeners existentes para evitar duplicações
+            const novoRestartBtn = restartBtn.cloneNode(true);
+            restartBtn.parentNode.replaceChild(novoRestartBtn, restartBtn);
+            
+            // Adicionar novo event listener
+            novoRestartBtn.addEventListener('click', function() {
+                console.log('[Diagnóstico] Botão de reinício clicado');
+                resetQuiz();
+            });
+        }
     }
 
     // Arrastar e soltar
@@ -2066,13 +2292,24 @@ document.addEventListener('DOMContentLoaded', function () {
             // CORREÇÃO: Remover TODOS os itens existentes
             console.log(`[Diagnóstico] Quantidade de itens antes do reset: ${dragItemsContainer.querySelectorAll('.drag-item').length}`);
 
-            // Primeiro, limpar as classes de todos os itens nas dropzones
+            // Primeiro, limpar as drop zones removendo todos os itens das zonas
             const dropZones = document.querySelectorAll('.drop-zone');
             dropZones.forEach(zone => {
-                const items = zone.querySelectorAll('.drag-item');
-                items.forEach(item => {
-                    item.classList.remove('correct', 'incorrect', 'pulse-error', 'drag-item-dropped');
-                });
+                // Limpar completamente o conteúdo das drop zones, mantendo apenas o título e descrição
+                const zoneTitle = zone.querySelector('h4');
+                const zoneDesc = zone.querySelector('p');
+                
+                // Salvar o título e descrição
+                const title = zoneTitle ? zoneTitle.outerHTML : '';
+                const desc = zoneDesc ? zoneDesc.outerHTML : '';
+                
+                // Limpar todo o conteúdo da drop zone
+                zone.innerHTML = '';
+                
+                // Restaurar apenas o título e descrição
+                zone.innerHTML = title + desc;
+                
+                console.log(`[Diagnóstico] Drop zone limpa: ${zone.getAttribute('data-type')}`);
             });
 
             dragItemsContainer.innerHTML = '';
@@ -2791,8 +3028,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const restaurarBtn = document.getElementById('restaurar-digitacao');
         const feedback = document.getElementById('digitacao-feedback');
 
-        // Frase original
-        const fraseOriginal = 'O aprendizado digital é importante para todas as idades.';
+        // Usar a frase padrão definida globalmente
+        const fraseOriginal = FRASE_PADRAO_DIGITACAO;
 
         // Carregar frase salva (se existir)
         const fraseSalva = localStorage.getItem('admin_digitacao_frase');
@@ -2804,6 +3041,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (typingText) {
                 typingText.textContent = fraseSalva;
             }
+        } else {
+            // Garantir que o textarea mostre a frase padrão
+            fraseTextarea.value = fraseOriginal;
         }
 
         // Salvar alterações
@@ -4843,7 +5083,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Simular download após 2 segundos
         setTimeout(() => {
-            alertaSimples(`O recurso "${resourceName}" foi baixado com sucesso!`, 'sucesso');
+            alertaSimples(`O recurso "${resourceName}" foi baixado com sucesso!`, 'success');
         }, 2000);
     }
 
@@ -5866,9 +6106,16 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Resetar o quiz
         function resetQuiz() {
+            console.log('[Diagnóstico] Reiniciando quiz...');
+            
+            // Redefinir o contador da pergunta atual
             currentQuestion = 1;
-            userAnswers = {};
-            correctAnswers = 0;
+            
+            // Limpar as respostas do usuário
+            for (let key in userAnswers) {
+                delete userAnswers[key];
+            }
+            console.log('[Diagnóstico] Respostas do usuário resetadas:', userAnswers);
             
             // Resetar todas as perguntas
             quizQuestions.forEach(question => {
@@ -5881,9 +6128,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 // Resetar as opções do tipo radio
                 question.querySelectorAll('.quiz-option').forEach(option => {
-                    option.classList.remove('correct', 'incorrect');
+                    option.classList.remove('selected', 'correct', 'incorrect');
                     const radio = option.querySelector('input[type="radio"]');
-                    if (radio) radio.checked = false;
+                    if (radio) {
+                        radio.checked = false;
+                        radio.disabled = false; // Habilitar novamente os botões de rádio
+                    }
+                });
+
+                // Remover explicações
+                question.querySelectorAll('.quiz-explanation').forEach(explanation => {
+                    explanation.remove();
                 });
             });
             
@@ -5891,12 +6146,14 @@ document.addEventListener('DOMContentLoaded', function () {
             if (quizFeedback) {
                 quizFeedback.textContent = "";
                 quizFeedback.className = "quiz-feedback";
+                quizFeedback.style.display = 'none';
             }
             
             // Resetar o botão verificar
             if (checkBtn) {
                 checkBtn.textContent = "Verificar";
                 checkBtn.disabled = true;
+                checkBtn.classList.remove('verified');
                 checkBtn.style.display = 'block';
             }
             
@@ -5905,9 +6162,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 quizResults.style.display = 'none';
             }
             
+            // Mostrar perguntas
+            if (quizExercise.querySelector('.quiz-questions')) {
+                quizExercise.querySelector('.quiz-questions').style.display = 'block';
+            }
+            
+            // Mostrar navegação
+            if (quizExercise.querySelector('.quiz-navigation')) {
+                quizExercise.querySelector('.quiz-navigation').style.display = 'flex';
+            }
+            
+            // Mostrar indicador de progresso
+            if (quizExercise.querySelector('.quiz-progress-indicator')) {
+                quizExercise.querySelector('.quiz-progress-indicator').style.display = 'flex';
+            }
+            
             // Resetar barra de progresso
             if (progressBar) {
                 progressBar.style.width = '0%';
+                progressBar.style.setProperty('--progress', '0%');
             }
             
             // Resetar contador de perguntas
@@ -5916,7 +6189,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             
             // Mostrar a primeira pergunta
-            showQuestion(currentQuestion);
+            showQuestion(1);
+            console.log('[Diagnóstico] Quiz reiniciado com sucesso');
         }
         
         // Adicionar event listener para o botão verificar/próxima
@@ -5982,4 +6256,25 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Inicializar o quiz
     initQuiz();
+
+    // Constantes para o sistema de digitação
+    const FRASE_PADRAO_DIGITACAO = 'O aprendizado digital é importante para todas as idades.';
+    
+    // Inicializar os textos para digitação com a frase padrão ou personalizada
+    document.addEventListener('DOMContentLoaded', function() {
+        const typingTexts = document.querySelectorAll('.typing-text');
+        typingTexts.forEach(text => {
+            // Verificar se existe frase personalizada pelo admin
+            const frasePersonalizada = localStorage.getItem('admin_digitacao_frase');
+            
+            if (frasePersonalizada && frasePersonalizada.trim() !== '') {
+                text.textContent = frasePersonalizada;
+                console.log('[Diagnóstico] Texto de digitação inicializado com frase personalizada do admin');
+            } else {
+                // Usar a frase padrão se não houver personalização
+                text.textContent = FRASE_PADRAO_DIGITACAO;
+                console.log('[Diagnóstico] Texto de digitação inicializado com frase padrão');
+            }
+        });
+    });
 });
