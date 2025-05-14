@@ -5748,11 +5748,11 @@ document.addEventListener('DOMContentLoaded', function () {
             "1": true, // Resposta já marcada com data-correct no HTML
             "2": "T%9pL!2@xB", // Resposta já marcada com data-correct no HTML
             "3": true, // Resposta já marcada com data-correct no HTML
-            "4": "b", // Phishing
-            "5": "c", // Antivírus e firewall
-            "6": "a", // Navegação anônima
-            "7": "d", // Compartilhar excessivamente
-            "8": "b"  // Verificar URL
+            "4": true, // Agora marcada com data-correct no HTML
+            "5": true, // Agora marcada com data-correct no HTML
+            "6": true, // Agora marcada com data-correct no HTML
+            "7": true, // Agora marcada com data-correct no HTML
+            "8": true  // Agora marcada com data-correct no HTML
         };
         
         // Explicações detalhadas para cada questão (mostradas quando o usuário errar)
@@ -5793,7 +5793,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Inicializar os event listeners para as opções de resposta
         function initAnswerOptions() {
-            // Para perguntas com quiz-answer (clicáveis)
+            // Para todas as perguntas usamos o formato quiz-answer (clicáveis)
             quizAdvanced.querySelectorAll('.quiz-answer').forEach(answer => {
                 answer.addEventListener('click', function() {
                     // Remover seleção anterior na mesma pergunta
@@ -5815,30 +5815,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     };
                     
                     console.log(`Resposta selecionada para questão ${questionNumber}: ${isCorrect ? 'Correta' : 'Incorreta'}`);
-                    
-                    // Habilitar o botão verificar se tiver uma resposta selecionada
-                    if (checkBtn) {
-                        checkBtn.disabled = false;
-                    }
-                });
-            });
-            
-            // Para perguntas com radio buttons
-            quizAdvanced.querySelectorAll('.quiz-option input[type="radio"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    const questionElement = this.closest('.quiz-question');
-                    const questionNumber = questionElement.getAttribute('data-question');
-                    const selectedValue = this.value;
-                    const isCorrect = selectedValue === correctAnswersMap[questionNumber];
-                    
-                    // Armazenar a resposta selecionada
-                    userAnswers[questionNumber] = {
-                        element: this,
-                        value: selectedValue,
-                        isCorrect: isCorrect
-                    };
-                    
-                    console.log(`Resposta selecionada para questão ${questionNumber}: ${selectedValue} (${isCorrect ? 'Correta' : 'Incorreta'})`);
                     
                     // Habilitar o botão verificar se tiver uma resposta selecionada
                     if (checkBtn) {
@@ -5888,77 +5864,32 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Verificar se a resposta está correta
             const userAnswer = userAnswers[currentQuestion];
-            let isCorrect = false;
-            let correctElement = null;
+            let isCorrect = userAnswer.isCorrect;
+            let correctElement = currentQuestionElement.querySelector('.quiz-answer[data-correct="true"]');
             
-            if (currentQuestionElement.querySelector('.quiz-answers')) {
-                // Perguntas do tipo quiz-answer
-                isCorrect = userAnswer.isCorrect;
-                correctElement = currentQuestionElement.querySelector('.quiz-answer[data-correct="true"]');
+            if (isCorrect) {
+                userAnswer.element.classList.add('correct');
+                // A contagem agora é feita na função showResults
+                quizFeedback.textContent = "Correto!";
+                quizFeedback.className = "quiz-feedback feedback-success";
+            } else {
+                userAnswer.element.classList.add('incorrect');
+                if (correctElement) correctElement.classList.add('correct');
+                quizFeedback.textContent = "Incorreto. A resposta correta está destacada.";
+                quizFeedback.className = "quiz-feedback feedback-error";
                 
-                if (isCorrect) {
-                    userAnswer.element.classList.add('correct');
-                    // A contagem agora é feita na função showResults
-                    quizFeedback.textContent = "Correto!";
-                    quizFeedback.className = "quiz-feedback feedback-success";
-                } else {
-                    userAnswer.element.classList.add('incorrect');
-                    if (correctElement) correctElement.classList.add('correct');
-                    quizFeedback.textContent = "Incorreto. A resposta correta está destacada.";
-                    quizFeedback.className = "quiz-feedback feedback-error";
-                    
-                    // Adicionar explicação detalhada para a resposta incorreta
-                    if (questionExplanations[currentQuestion]) {
-                        const explanationDiv = document.createElement('div');
-                        explanationDiv.className = 'quiz-explanation';
-                        explanationDiv.innerHTML = `<strong>Explicação:</strong> ${questionExplanations[currentQuestion]}`;
-                        currentQuestionElement.appendChild(explanationDiv);
-                    }
-                }
-            } else if (currentQuestionElement.querySelector('.quiz-options')) {
-                // Perguntas do tipo radio button
-                isCorrect = userAnswer.value === correctAnswersMap[currentQuestion];
-                
-                // Atualizar o objeto userAnswers com a informação correta
-                userAnswers[currentQuestion].isCorrect = isCorrect;
-                
-                const selectedOption = userAnswer.element.closest('.quiz-option');
-                const correctOption = currentQuestionElement.querySelector(`.quiz-option input[value="${correctAnswersMap[currentQuestion]}"]`).closest('.quiz-option');
-                
-                if (isCorrect) {
-                    selectedOption.classList.add('correct');
-                    // A contagem agora é feita na função showResults
-                    quizFeedback.textContent = "Correto!";
-                    quizFeedback.className = "quiz-feedback feedback-success";
-                } else {
-                    selectedOption.classList.add('incorrect');
-                    correctOption.classList.add('correct');
-                    quizFeedback.textContent = "Incorreto. A resposta correta está destacada.";
-                    quizFeedback.className = "quiz-feedback feedback-error";
-                    
-                    // Adicionar explicação detalhada para a resposta incorreta
-                    if (questionExplanations[currentQuestion]) {
-                        const explanationDiv = document.createElement('div');
-                        explanationDiv.className = 'quiz-explanation';
-                        explanationDiv.innerHTML = `<strong>Explicação:</strong> ${questionExplanations[currentQuestion]}`;
-                        currentQuestionElement.appendChild(explanationDiv);
-                    }
+                // Adicionar explicação detalhada para a resposta incorreta
+                if (questionExplanations[currentQuestion]) {
+                    const explanationDiv = document.createElement('div');
+                    explanationDiv.className = 'quiz-explanation';
+                    explanationDiv.innerHTML = `<strong>Explicação:</strong> ${questionExplanations[currentQuestion]}`;
+                    currentQuestionElement.appendChild(explanationDiv);
                 }
             }
             
-            // Atualizar a barra de progresso quando verifica a resposta
-            if (progressBar) {
-                const progressPercentage = ((currentQuestion) / quizQuestions.length) * 100;
-                progressBar.style.width = `${progressPercentage}%`;
-            }
-            
-            // Mudar texto do botão verificar para próxima
+            // Ativar o botão para continuar
             if (checkBtn) {
-                if (currentQuestion < quizQuestions.length) {
-                    checkBtn.textContent = "Próxima";
-                } else {
-                    checkBtn.textContent = "Ver Resultados";
-                }
+                checkBtn.textContent = currentQuestion < quizQuestions.length ? "Próxima" : "Ver resultados";
             }
             
             return true;
@@ -5966,65 +5897,71 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Mostrar os resultados finais
         function showResults() {
-            quizQuestions.forEach(question => {
-                question.style.display = 'none';
-            });
+            console.log("Mostrando resultados do quiz...");
             
-            if (quizFeedback) {
-                quizFeedback.textContent = "";
-                quizFeedback.className = "quiz-feedback";
+            // Esconder perguntas
+            if (quizAdvanced.querySelector('.quiz-questions')) {
+                quizAdvanced.querySelector('.quiz-questions').style.display = 'none';
             }
             
+            // Esconder botão verificar e feedback
             if (checkBtn) {
                 checkBtn.style.display = 'none';
             }
             
-            // Recalcular o número de respostas corretas (corrigir bug de contagem)
+            if (quizFeedback) {
+                quizFeedback.style.display = 'none';
+            }
+            
+            // Contar acertos
             correctAnswers = 0;
+            
             for (let i = 1; i <= quizQuestions.length; i++) {
-                if (userAnswers[i]) {
-                    if (userAnswers[i].isCorrect || 
-                        (userAnswers[i].value && userAnswers[i].value === correctAnswersMap[i])) {
-                        correctAnswers++;
-                    }
+                if (userAnswers[i] && userAnswers[i].isCorrect) {
+                    correctAnswers++;
                 }
             }
             
+            console.log(`Total de respostas corretas: ${correctAnswers}/${quizQuestions.length}`);
+            
+            // Exibir resultado
             if (quizResults) {
                 quizResults.style.display = 'block';
                 
+                // Atualizar pontuação
                 if (quizScore) {
-                    const scorePercentage = Math.round((correctAnswers / quizQuestions.length) * 100);
-                    quizScore.textContent = `${correctAnswers}/${quizQuestions.length} (${scorePercentage}%)`;
+                    quizScore.textContent = `${correctAnswers}/${quizQuestions.length}`;
                     
                     // Adicionar classe baseada na pontuação
                     quizScore.className = 'quiz-score';
-                    if (scorePercentage >= 70) {
+                    
+                    const percentageCorrect = (correctAnswers / quizQuestions.length) * 100;
+                    
+                    if (percentageCorrect >= 75) {
                         quizScore.classList.add('high-score');
-                    } else if (scorePercentage >= 40) {
+                    } else if (percentageCorrect >= 50) {
                         quizScore.classList.add('medium-score');
                     } else {
                         quizScore.classList.add('low-score');
                     }
                 }
                 
+                // Mostrar detalhes das respostas
                 if (resultDetails) {
-                    resultDetails.innerHTML = "";
+                    resultDetails.innerHTML = '';
                     
-                    // Adicionar detalhes de cada pergunta ao resultado
                     for (let i = 1; i <= quizQuestions.length; i++) {
                         const question = quizAdvanced.querySelector(`.quiz-question[data-question="${i}"]`);
-                        let questionText = "";
+                        if (!question) continue;
                         
+                        let questionText;
                         if (question.querySelector('.quiz-question-text')) {
                             questionText = question.querySelector('.quiz-question-text').textContent;
                         } else {
                             questionText = question.querySelector('p').textContent;
                         }
                         
-                        const isCorrect = userAnswers[i] && 
-                                      ((userAnswers[i].isCorrect) || 
-                                      (userAnswers[i].value === correctAnswersMap[i]));
+                        const isCorrect = userAnswers[i] && userAnswers[i].isCorrect;
                         
                         const resultItem = document.createElement('div');
                         resultItem.className = isCorrect ? 'result-item correct' : 'result-item incorrect';
@@ -6045,19 +5982,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         
                         if (userAnswers[i]) {
                             if (userAnswers[i].element) {
-                                let answerText = "";
-                                
-                                if (userAnswers[i].element.tagName === 'DIV') {
-                                    // Para perguntas do tipo quiz-answer
-                                    answerText = userAnswers[i].element.textContent.trim();
-                                } else if (userAnswers[i].element.tagName === 'INPUT') {
-                                    // Para perguntas do tipo radio
-                                    const label = userAnswers[i].element.nextElementSibling;
-                                    if (label) {
-                                        answerText = label.textContent.trim();
-                                    }
-                                }
-                                
+                                let answerText = userAnswers[i].element.textContent.trim();
                                 userAnswerText.innerHTML = `<strong>Sua resposta: </strong>${answerText}`;
                                 
                                 // Adicionar a resposta correta se o usuário errou
@@ -6065,19 +5990,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                     const correctAnswer = document.createElement('div');
                                     correctAnswer.className = 'correct-answer';
                                     
+                                    const correctElement = question.querySelector('.quiz-answer[data-correct="true"]');
                                     let correctAnswerText = "";
-                                    if (correctAnswersMap[i] === true) {
-                                        // Para perguntas do tipo quiz-answer
-                                        const correctElement = question.querySelector('.quiz-answer[data-correct="true"]');
-                                        if (correctElement) {
-                                            correctAnswerText = correctElement.textContent.trim();
-                                        }
-                                    } else {
-                                        // Para perguntas do tipo radio
-                                        const correctOption = question.querySelector(`.quiz-option input[value="${correctAnswersMap[i]}"]`);
-                                        if (correctOption && correctOption.nextElementSibling) {
-                                            correctAnswerText = correctOption.nextElementSibling.textContent.trim();
-                                        }
+                                    if (correctElement) {
+                                        correctAnswerText = correctElement.textContent.trim();
                                     }
                                     
                                     correctAnswer.innerHTML = `<strong>Resposta correta: </strong>${correctAnswerText}`;
@@ -6128,16 +6044,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 question.querySelectorAll('.quiz-answer').forEach(answer => {
                     answer.classList.remove('selected', 'correct', 'incorrect');
                 });
-                
-                // Resetar as opções do tipo radio
-                question.querySelectorAll('.quiz-option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    const radio = option.querySelector('input[type="radio"]');
-                    if (radio) {
-                        radio.checked = false;
-                        radio.disabled = false; // Habilitar novamente os botões de rádio
-                    }
-                });
 
                 // Remover explicações
                 question.querySelectorAll('.quiz-explanation').forEach(explanation => {
@@ -6166,18 +6072,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             
             // Mostrar perguntas
-            if (quizExercise.querySelector('.quiz-questions')) {
-                quizExercise.querySelector('.quiz-questions').style.display = 'block';
+            if (quizAdvanced.querySelector('.quiz-questions')) {
+                quizAdvanced.querySelector('.quiz-questions').style.display = 'block';
             }
             
             // Mostrar navegação
-            if (quizExercise.querySelector('.quiz-navigation')) {
-                quizExercise.querySelector('.quiz-navigation').style.display = 'flex';
+            if (quizAdvanced.querySelector('.quiz-navigation')) {
+                quizAdvanced.querySelector('.quiz-navigation').style.display = 'flex';
             }
             
             // Mostrar indicador de progresso
-            if (quizExercise.querySelector('.quiz-progress-indicator')) {
-                quizExercise.querySelector('.quiz-progress-indicator').style.display = 'flex';
+            if (quizAdvanced.querySelector('.quiz-progress-indicator')) {
+                quizAdvanced.querySelector('.quiz-progress-indicator').style.display = 'flex';
             }
             
             // Resetar barra de progresso
@@ -6274,5 +6180,293 @@ document.addEventListener('DOMContentLoaded', function () {
             text.textContent = FRASE_PADRAO_DIGITACAO;
             console.log('[Diagnóstico] Texto de digitação inicializado com frase padrão');
         }
+    });
+
+    // Código para gerenciar a seção de Reconhecimento no glossário
+    document.addEventListener('DOMContentLoaded', function() {
+        initRecognitionSections();
+    });
+
+    function initRecognitionSections() {
+        // Obter todas as seções de reconhecimento
+        const sections = document.querySelectorAll('.recognition-section');
+        if (!sections.length) return;
+        
+        console.log("[Diagnóstico] Inicializando seções de reconhecimento:", sections.length);
+        console.log("[Diagnóstico] IDs das seções:", Array.from(sections).map(s => s.id).join(", "));
+        
+        // Verificar e corrigir os ícones de toggle
+        fixToggleIcons(sections);
+        
+        // Marcar a primeira seção como ativa inicialmente
+        sections[0].classList.add('active');
+        const firstToggle = sections[0].querySelector('.section-toggle i');
+        if (firstToggle) {
+            firstToggle.className = 'fas fa-chevron-up';
+        }
+        
+        // Configurar os cabeçalhos das seções como clicáveis
+        sections.forEach((section, idx) => {
+            const header = section.querySelector('.section-header');
+            if (header) {
+                header.addEventListener('click', () => {
+                    console.log("[Diagnóstico] Clique na seção:", section.id || `Seção ${idx+1}`);
+                    
+                    // Se a seção já está ativa, não fazer nada
+                    if (section.classList.contains('active')) {
+                        console.log("[Diagnóstico] Seção já estava ativa, ignorando clique");
+                        return;
+                    }
+                    
+                    // Fechar todas as seções
+                    sections.forEach(s => {
+                        s.classList.remove('active');
+                        const toggle = s.querySelector('.section-toggle i');
+                        if (toggle) {
+                            toggle.className = 'fas fa-chevron-down';
+                        }
+                    });
+                    
+                    // Abrir a seção clicada
+                    section.classList.add('active');
+                    const toggle = section.querySelector('.section-toggle i');
+                    if (toggle) {
+                        toggle.className = 'fas fa-chevron-up';
+                    }
+                    
+                    console.log("[Diagnóstico] Seção ativada com sucesso");
+                });
+            }
+        });
+        
+        // Configurar abertura sequencial automática quando o glossário é aberto
+        const glossaryTerms = document.querySelectorAll('.glossary-term');
+        glossaryTerms.forEach(term => {
+            term.addEventListener('click', function() {
+                const parent = this.parentElement;
+                if (parent.classList.contains('active') && this.textContent.trim() === 'Reconhecimento') {
+                    console.log("[Diagnóstico] Termo 'Reconhecimento' do glossário clicado, abrindo seções sequencialmente");
+                    setTimeout(() => {
+                        openSequentially(sections);
+                    }, 300);
+                }
+            });
+        });
+    }
+
+    // Função para verificar e corrigir problemas com os ícones de toggle
+    function fixToggleIcons(sections) {
+        sections.forEach((section, idx) => {
+            const toggleContainer = section.querySelector('.section-toggle');
+            if (!toggleContainer) {
+                console.log("[Diagnóstico] Criando container de toggle para a seção", idx + 1);
+                const header = section.querySelector('.section-header');
+                if (header) {
+                    const toggleSpan = document.createElement('span');
+                    toggleSpan.className = 'section-toggle';
+                    
+                    const toggleIcon = document.createElement('i');
+                    toggleIcon.className = 'fas fa-chevron-down';
+                    
+                    toggleSpan.appendChild(toggleIcon);
+                    header.appendChild(toggleSpan);
+                }
+            } else {
+                // Verificar se o ícone existe
+                const toggleIcon = toggleContainer.querySelector('i');
+                if (!toggleIcon) {
+                    console.log("[Diagnóstico] Criando ícone de toggle para a seção", idx + 1);
+                    const toggleIcon = document.createElement('i');
+                    toggleIcon.className = 'fas fa-chevron-down';
+                    toggleContainer.appendChild(toggleIcon);
+                } else {
+                    // Redefinir o ícone para garantir a consistência
+                    if (section.classList.contains('active')) {
+                        toggleIcon.className = 'fas fa-chevron-up';
+                    } else {
+                        toggleIcon.className = 'fas fa-chevron-down';
+                    }
+                }
+            }
+        });
+    }
+
+    // Função para abrir as seções sequencialmente com animações
+    function openSequentially(sections) {
+        let delay = 0;
+        
+        console.log("[Diagnóstico] Iniciando abertura sequencial de", sections.length, "seções");
+        
+        sections.forEach((section, index) => {
+            setTimeout(() => {
+                // Fechar todas as seções
+                sections.forEach(s => {
+                    s.classList.remove('active');
+                    const toggle = s.querySelector('.section-toggle i');
+                    if (toggle) {
+                        toggle.className = 'fas fa-chevron-down';
+                    }
+                });
+                
+                // Abrir a seção atual
+                section.classList.add('active');
+                const toggle = section.querySelector('.section-toggle i');
+                if (toggle) {
+                    toggle.className = 'fas fa-chevron-up';
+                } else {
+                    console.log("[Diagnóstico] ERRO: Não foi encontrado o ícone toggle na seção", section.id || `Seção ${index+1}`);
+                }
+                
+                console.log("[Diagnóstico] Abrindo seção sequencialmente:", index + 1, section.id || "");
+                
+                // Se é a última seção, manter todas abertas após um breve período
+                if (index === sections.length - 1) {
+                    setTimeout(() => {
+                        sections.forEach((s, i) => {
+                            s.classList.add('active');
+                            const toggle = s.querySelector('.section-toggle i');
+                            if (toggle) {
+                                toggle.className = 'fas fa-chevron-up';
+                            } else {
+                                console.log("[Diagnóstico] ERRO: Não foi encontrado o ícone toggle na seção", s.id || `Seção ${i+1}`);
+                            }
+                        });
+                        console.log("[Diagnóstico] Todas as seções foram abertas");
+                    }, 1500);
+                }
+            }, delay);
+            delay += 1500; // Tempo entre a abertura de cada seção
+        });
+    }
+
+    // Inicializar as seções de reconhecimento quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', function() {
+        // Garantir que outras inicializações não interfiram
+        setTimeout(function() {
+            console.log("[Diagnóstico] Iniciando reconhecimento após carregamento do DOM");
+            initRecognitionSections();
+            
+            // Adicionar uma inicialização manual para testar se há problemas com os elementos
+            const sectionsManual = document.querySelectorAll('.recognition-section');
+            if (sectionsManual.length) {
+                console.log("[Diagnóstico] Teste manual encontrou", sectionsManual.length, "seções");
+                
+                // Adicionar listeners de clique para o teste manual
+                sectionsManual.forEach((section, idx) => {
+                    const header = section.querySelector('.section-header');
+                    if (header) {
+                        console.log("[Diagnóstico] Header encontrado para seção", idx + 1);
+                        
+                        // Testar clicks diretamente nos cabeçalhos
+                        header.addEventListener('click', function(e) {
+                            console.log("[Diagnóstico] Clique manual na seção", idx + 1);
+                            
+                            // Verificar se o toggle está funcionando
+                            const toggle = section.querySelector('.section-toggle i');
+                            if (toggle) {
+                                console.log("[Diagnóstico] Toggle encontrado:", toggle.className);
+                            } else {
+                                console.log("[Diagnóstico] ERRO: Toggle não encontrado na seção", idx + 1);
+                            }
+                        });
+                    }
+                });
+            }
+        }, 1000);
+    });
+
+    // ... existing code ...
+
+    // Função para inicializar as seções de Reconhecimento - versão direta e simplificada
+    function initReconhecimentoSimples() {
+        console.log('[DEBUG] Inicializando seções de Reconhecimento - versão simplificada');
+        
+        // Selecionar todas as seções
+        const sections = document.querySelectorAll('.recognition-section');
+        
+        if (!sections.length) {
+            console.log('[DEBUG] Nenhuma seção de Reconhecimento encontrada');
+            return;
+        }
+        
+        console.log('[DEBUG] Encontradas', sections.length, 'seções de Reconhecimento');
+        
+        // Definir primeira seção como ativa
+        if (!document.querySelector('.recognition-section.active')) {
+            sections[0].classList.add('active');
+            const firstToggle = sections[0].querySelector('.section-toggle i');
+            if (firstToggle) {
+                firstToggle.className = 'fas fa-chevron-up';
+            }
+        }
+        
+        // Adicionar listeners de clique em cada cabeçalho
+        document.querySelectorAll('.section-header').forEach((header, index) => {
+            // Remover listeners existentes para evitar duplicação
+            const newHeader = header.cloneNode(true);
+            header.parentNode.replaceChild(newHeader, header);
+            
+            // Adicionar novo listener
+            newHeader.addEventListener('click', function() {
+                console.log('[DEBUG] Clique na seção', index + 1);
+                
+                const section = this.closest('.recognition-section');
+                const wasActive = section.classList.contains('active');
+                
+                // Fechar todas as seções
+                sections.forEach(s => {
+                    s.classList.remove('active');
+                    const icon = s.querySelector('.section-toggle i');
+                    if (icon) icon.className = 'fas fa-chevron-down';
+                });
+                
+                // Se a seção não estava ativa, abri-la
+                if (!wasActive) {
+                    section.classList.add('active');
+                    const icon = section.querySelector('.section-toggle i');
+                    if (icon) icon.className = 'fas fa-chevron-up';
+                    console.log('[DEBUG] Seção', index + 1, 'aberta');
+                } else {
+                    console.log('[DEBUG] Seção', index + 1, 'já estava ativa, foi fechada');
+                }
+            });
+        });
+        
+        // Adicionar listener para o termo do glossário "Reconhecimento"
+        document.querySelectorAll('.glossary-term').forEach(term => {
+            if (term.textContent.trim() === 'Reconhecimento') {
+                term.addEventListener('click', function() {
+                    console.log('[DEBUG] Termo Reconhecimento clicado');
+                    setTimeout(() => {
+                        // Ativar a primeira seção
+                        if (sections.length > 0) {
+                            sections.forEach(s => s.classList.remove('active')); 
+                            sections[0].classList.add('active');
+                            const icon = sections[0].querySelector('.section-toggle i');
+                            if (icon) icon.className = 'fas fa-chevron-up';
+                        }
+                    }, 300);
+                });
+            }
+        });
+    }
+
+    // Garantir que o código seja executado quando o documento estiver pronto
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('[DEBUG] DOM carregado, inicializando funções');
+        
+        // Chamar a nova função simplificada
+        setTimeout(initReconhecimentoSimples, 500);
+        
+        // Adicionar um fallback para garantir que as seções sejam inicializadas
+        window.addEventListener('load', function() {
+            console.log('[DEBUG] Página totalmente carregada, verificando inicialização das seções');
+            
+            const sections = document.querySelectorAll('.recognition-section');
+            if (sections.length > 0 && !document.querySelector('.section-header.initialized')) {
+                console.log('[DEBUG] Inicializando seções como fallback');
+                initReconhecimentoSimples();
+            }
+        });
     });
 });
